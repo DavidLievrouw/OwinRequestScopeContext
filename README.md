@@ -23,8 +23,8 @@ With this Owin middleware, you can use OwinRequestScopeContext.Current like Http
     public string ProvideMyCustomHeaderValue() {
       var requestContext = OwinRequestScopeContext.Current;
       if (requestContext == null) return null;
-      if (!requestContext.Items.TryGetValue("MyCustomHeaderValue", out string myCustomHeaderValue)) return null;
-      return myCustomHeaderValue as string;
+      if (!requestContext.Items.TryGetValue("MyCustomHeaderValue", out object myCustomHeaderValueObj)) return null;
+      return myCustomHeaderValueObj as string;
     }
   }
 ```
