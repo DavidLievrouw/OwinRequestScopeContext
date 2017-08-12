@@ -33,10 +33,12 @@ More info in this article: http://odetocode.com/Articles/112.aspx
 ```
 
 ## NuGet
+
 Binary package: [![NuGet Status](http://img.shields.io/nuget/v/DavidLievrouw.OwinRequestScopeContext.svg?style=flat-square)](https://www.nuget.org/packages/DavidLievrouw.OwinRequestScopeContext/)
-Source-only package: TBA
+
+Source-only package: [![NuGet Status](http://img.shields.io/nuget/v/DavidLievrouw.OwinRequestScopeContext.Sources.svg?style=flat-square)](https://www.nuget.org/packages/DavidLievrouw.OwinRequestScopeContext.Sources/)
 
 ## Change log
 
 v1.0.0 - 2017-08-12
-- Initial release.
+- Initial release (binary and sources).
