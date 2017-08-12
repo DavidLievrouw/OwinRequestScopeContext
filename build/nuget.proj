@@ -5,10 +5,7 @@
     <PackagesPath>$(MSBuildProjectDirectory)\packages</PackagesPath>
     <BuildDirectory>$(RootPath)\build</BuildDirectory>
     <TargetDirectory>$(BuildDirectory)\deploy-output\nuget</TargetDirectory>
-    <NuGetExe Condition="$(NuGetExe) == ''">$(RootPath)\.nuget\nuget.exe</NuGetExe>
-    <MSBuildCommunityTasksPath>$(PackagesPath)\MSBuildTasks.1.5.0.235\tools</MSBuildCommunityTasksPath>
   </PropertyGroup>
-  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets"/>
   <Import Project="Utils.targets"/>
 
   <Target Name="InitVersion">
@@ -36,36 +33,42 @@
   </Target>
   
   <Target Name="InitPack">
-  <RemoveDir ContinueOnError="false"
-             Directories="$(TargetDirectory)"
-             Condition="Exists('$(TargetDirectory)')" />
-  </Target>
-  
-  <Target Name="WriteVersionInNuSpec">
-    <Time>
-      <Output TaskParameter="Year" PropertyName="Year" />
-    </Time>
-  
-    <XmlUpdate
-      Prefix="ns"
-      Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
-      XmlFileName="DavidLievrouw.OwinRequestScopeContext.nuspec"
-      XPath="/package/metadata/version"
-      Value="$(NuSpecVersion)" />
-    <XmlUpdate
-      Prefix="ns"
-      Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
-      XmlFileName="DavidLievrouw.OwinRequestScopeContext.nuspec"
-      XPath="/package/metadata/copyright"
-      Value="Copyright (c) $(Year) David Lievrouw" />
-  </Target>
-  
-  <Target Name="Pack" DependsOnTargets="InitVersion;InitPack;WriteVersionInNuSpec;">
-    <MakeDir ContinueOnError="false" Directories="$(TargetDirectory)" Condition="!Exists('$(TargetDirectory)')" />
-    <Exec Command='&quot;$(NuGetExe)&quot; pack &quot;$(MSBuildProjectDirectory)\DavidLievrouw.OwinRequestScopeContext.nuspec&quot; -Version $(NuSpecVersion) -NonInteractive -o &quot;$(TargetDirectory)&quot;' />  
+    <RemoveDir ContinueOnError="false"
+               Directories="$(TargetDirectory)"
+               Condition="Exists('$(TargetDirectory)')" />
   </Target>
 
-  <Target Name="Push" DependsOnTargets="InitVersion">
-    <Exec Command='$(NuGetExe) push $(TargetDirectory)\DavidLievrouw.OwinRequestScopeContext.$(NuSpecVersion).nupkg' />
+  <Target Name="Pack" DependsOnTargets="InitPack;InitVersion;">
+    <MSBuild Projects="$(MSBuildProjectDirectory)\nuget_binary.proj;"
+             Properties="
+               TargetDirectory=$(TargetDirectory);
+               NuSpecVersion=$(NuSpecVersion);"
+             StopOnFirstFailure="true"
+             Targets="Pack"
+             BuildInParallel="false"/>
+    <MSBuild Projects="$(MSBuildProjectDirectory)\nuget_sources.proj;"
+             Properties="
+               TargetDirectory=$(TargetDirectory);
+               NuSpecVersion=$(NuSpecVersion);"
+             StopOnFirstFailure="true"
+             Targets="Pack"
+             BuildInParallel="false"/>
+  </Target>
+  
+  <Target Name="Push" DependsOnTargets="Pack;">
+    <MSBuild Projects="$(MSBuildProjectDirectory)\nuget_binary.proj;"
+             Properties="
+               TargetDirectory=$(TargetDirectory);
+               NuSpecVersion=$(NuSpecVersion);"
+             StopOnFirstFailure="true"
+             Targets="Push"
+             BuildInParallel="false"/>
+    <MSBuild Projects="$(MSBuildProjectDirectory)\nuget_sources.proj;"
+             Properties="
+               TargetDirectory=$(TargetDirectory);
+               NuSpecVersion=$(NuSpecVersion);"
+             StopOnFirstFailure="true"
+             Targets="Push"
+             BuildInParallel="false"/>
   </Target>
 </Project>
