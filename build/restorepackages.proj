@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="RestorePackages" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <RootPath>$(MSBuildProjectDirectory)\..</RootPath>
+    <SourcePath>$(RootPath)\src</SourcePath>
+	<CorePackagesPath>$(RootPath)\build\packages</CorePackagesPath>
+	<SourcePackagesPath>$(RootPath)\src\packages</SourcePackagesPath>
+    <NuGetExe Condition="$(NuGetExe) == ''">$(RootPath)\.nuget\nuget.exe</NuGetExe>
+  </PropertyGroup>
+
+  <Target Name="UpdateNuGet">
+    <Exec Command='&quot;$(NuGetExe)&quot; update -self' />
+  </Target>
+  
+  <Target Name="RestorePackages">
+    <ItemGroup>
+      <BuildPackageConfigs Include="$(RootPath)\build\packages.config" />
+      <srcPackageConfigs Include="$(RootPath)\src\**\packages.config" />
+    </ItemGroup>
+    <Exec Command='&quot;$(NuGetExe)&quot; install &quot;%(BuildPackageConfigs.Identity)&quot; -o "$(CorePackagesPath)" -Verbosity detailed' /> 
+    <Exec Command='&quot;$(NuGetExe)&quot; install &quot;%(srcPackageConfigs.Identity)&quot; -o "$(SourcePackagesPath)" -Verbosity detailed' />
+  </Target>
+  
+  <Target Name="RestoreCorePackagesOnly">
+    <ItemGroup>
+      <BuildPackageConfigs Include="$(RootPath)\build\packages.config" />
+    </ItemGroup>
+    <Exec Command='&quot;$(NuGetExe)&quot; install &quot;%(BuildPackageConfigs.Identity)&quot; -o "$(CorePackagesPath)" -Verbosity detailed' />
+  </Target>
+</Project>

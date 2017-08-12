@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:ns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>DavidLievrouw.OwinRequestScopeContext</id>
+    <version>1.0.0</version>
+    <authors>David Lievrouw</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <title>DavidLievrouw.OwinRequestScopeContext</title>
+    <projectUrl>https://github.com/DavidLievrouw/OwinRequestScopeContext</projectUrl>
+    <summary>With this Owin middleware, you can use OwinRequestScopeContext.Current like HttpContext.Current, but without a dependency to System.Web.</summary>
+    <description>With this Owin middleware, you can use OwinRequestScopeContext.Current like HttpContext.Current, but without a dependency to System.Web.</description>
+    <dependencies>
+      <group targetFramework="net462">
+        <dependency id="Microsoft.Owin" version="3.1.0" />
+        <dependency id="Owin" version="1.0" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="deploy-output\OwinRequestScopeContext\DavidLievrouw.OwinRequestScopeContext.*" target="lib\net462\" />
+  </files>
+</package>

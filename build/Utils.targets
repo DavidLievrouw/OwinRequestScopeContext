@@ -1,0 +1,36 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <UsingTask 
+      TaskName="GetVersionParts"
+      TaskFactory="CodeTaskFactory"
+      AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+
+      <ParameterGroup>
+        <VersionNumber ParameterType="System.String" Required="true" />
+        <MajorVersion ParameterType="System.Int32" Output="true" />
+        <MinorVersion ParameterType="System.Int32" Output="true" />
+        <BuildVersion ParameterType="System.Int32" Output="true" />
+        <RevisionVersion ParameterType="System.Int32" Output="true" />
+      </ParameterGroup>
+	  
+      <Task>
+        <Using Namespace="System.Diagnostics" />
+        <Code Type="Fragment" Language="cs">
+          <![CDATA[
+            Log.LogMessage("Getting version details of version number: " + this.VersionNumber + "...", MessageImportance.High);
+
+            Version v = Version.Parse(VersionNumber);
+
+            this.MajorVersion = v.Major;
+            this.MinorVersion = v.Minor;
+            this.BuildVersion = v.Build;
+            this.RevisionVersion = v.Revision;
+            
+            Log.LogMessage("Major: " + this.MajorVersion, MessageImportance.High);
+            Log.LogMessage("Minor: " + this.MinorVersion, MessageImportance.High);
+            Log.LogMessage("Build: " + this.BuildVersion, MessageImportance.High);
+            Log.LogMessage("Revision: " + this.RevisionVersion, MessageImportance.High);
+          ]]>
+        </Code>
+      </Task>
+    </UsingTask>
+</Project>
