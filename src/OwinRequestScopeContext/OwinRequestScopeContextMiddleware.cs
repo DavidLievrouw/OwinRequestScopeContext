@@ -2,7 +2,7 @@
 using Microsoft.Owin;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
-  public class OwinRequestScopeContextMiddleware : OwinMiddleware {
+  internal class OwinRequestScopeContextMiddleware : OwinMiddleware {
     public OwinRequestScopeContextMiddleware(OwinMiddleware next) : base(next) { }
 
     public override async Task Invoke(IOwinContext context) {

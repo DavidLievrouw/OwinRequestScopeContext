@@ -6,7 +6,7 @@ using System.Runtime.Remoting.Messaging;
 using Microsoft.Owin;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
-  public class OwinRequestScopeContext : IOwinRequestScopeContext {
+  internal class OwinRequestScopeContext : IOwinRequestScopeContext {
     const string CallContextKey = "dl.owin.rscopectx";
     readonly List<IDisposable> _disposables;
 
