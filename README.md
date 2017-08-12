@@ -11,11 +11,11 @@ With this Owin middleware, you can use OwinRequestScopeContext.Current like Http
     }
   }
   
-  public class RequestParametersFromNancyRequestConfigurator {
-    public void Configure(Nancy.Request nancyRequest) {
+  public class RequestParametersFromOwinRequestConfigurator {
+    public void Configure(IOwinRequest owinRequest) {
       // Set a value in the Items dictionary, available througout the request
       var requestContext = OwinRequestScopeContext.Current;
-      requestContext.Items["MyCustomHeaderValue"] = nancyRequest.Headers["MyCustomHeader"].FirstOrDefault();
+      requestContext.Items["MyCustomHeaderValue"] = owinRequest.Headers["MyCustomHeader"];
     }
   }
   
