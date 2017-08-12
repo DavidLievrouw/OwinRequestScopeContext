@@ -32,6 +32,30 @@ More info in this article: http://odetocode.com/Articles/112.aspx
   }
 ```
 
+## Disposable
+
+You can also register IDisposable instances for disposal when the request is completed. 
+```cs
+
+  public class LocalStorageManager : IDisposable {
+    ...
+    public void Dispose() { ... }
+  }
+
+  public class RequestParametersFromOwinRequestConfigurator {
+    public void Configure(IOwinRequest owinRequest) {
+      var requestContext = OwinRequestScopeContext.Current;
+      var localStorageManager = new LocalStorageManager();
+      requestContext.Items["MyDisposableObject"] = localStorageManager;
+
+      // Dispose the localStorageManager instance when the request is completed
+      requestContext.RegisterForDisposal(localStorageManager);
+    }
+  }
+```
+
+Remark: When any .Dispose() call fails, the other registered instances are still disposed. Only afterwards, an AggregateException is thrown.
+
 ## NuGet
 
 Binary package: [![NuGet Status](http://img.shields.io/nuget/v/DavidLievrouw.OwinRequestScopeContext.svg?style=flat-square)](https://www.nuget.org/packages/DavidLievrouw.OwinRequestScopeContext/)
