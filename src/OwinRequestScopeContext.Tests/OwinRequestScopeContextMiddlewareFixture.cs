@@ -8,18 +8,18 @@ using NUnit.Framework;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
   [TestFixture]
-  public class OwinRequestScopeContextMiddlewareTests {
-    private FakeMiddleware _next;
-    private OwinRequestScopeContextMiddleware _sut;
+  public class OwinRequestScopeContextMiddlewareFixture {
+    FakeMiddleware _next;
+    OwinRequestScopeContextMiddleware _sut;
 
     [SetUp]
     public virtual void SetUp() {
-      _next = new FakeMiddleware(null);
+      _next = new FakeMiddleware(null, () => { });
       _sut = new OwinRequestScopeContextMiddleware(_next);
     }
 
     [TestFixture]
-    public class Construction : OwinRequestScopeContextMiddlewareTests {
+    public class Construction : OwinRequestScopeContextMiddlewareFixture {
       [Test]
       public void AllowsNullNext() {
         Action act = () => new OwinRequestScopeContextMiddleware(null);
@@ -28,8 +28,8 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
-    public class Invoke : OwinRequestScopeContextMiddlewareTests {
-      private IOwinContext _owinContext;
+    public class Invoke : OwinRequestScopeContextMiddlewareFixture {
+      IOwinContext _owinContext;
 
       [SetUp]
       public override void SetUp() {
@@ -63,7 +63,30 @@ namespace DavidLievrouw.OwinRequestScopeContext {
         act.ShouldNotThrow();
       }
 
-      private class OwinRequestScopeContextIsPresentValidatingMiddleware : OwinMiddleware {
+      [Test]
+      public async Task DisposesContextAtEnd() {
+        var disposable = A.Fake<IDisposable>();
+        _next = new FakeMiddleware(null, () => OwinRequestScopeContext.Current.RegisterForDisposal(disposable));
+        _sut = new OwinRequestScopeContextMiddleware(_next);
+        await _sut.Invoke(_owinContext).ConfigureAwait(false);
+        A.CallTo(() => disposable.Dispose()).MustHaveHappened();
+      }
+
+      [Test]
+      public void DisposesContextAtEnd_EvenWhenPipelineFailed() {
+        var disposable = A.Fake<IDisposable>();
+        var failureInPipeline = new InvalidOperationException("Failure for unit tests");
+        _next = new FakeMiddleware(null, () => {
+          OwinRequestScopeContext.Current.RegisterForDisposal(disposable);
+          throw failureInPipeline;
+        });
+        _sut = new OwinRequestScopeContextMiddleware(_next);
+        Func<Task> act = () => _sut.Invoke(_owinContext);
+        act.ShouldThrow<InvalidOperationException>().Where(_ => _.Equals(failureInPipeline));
+        A.CallTo(() => disposable.Dispose()).MustHaveHappened();
+      }
+
+      class OwinRequestScopeContextIsPresentValidatingMiddleware : OwinMiddleware {
         public OwinRequestScopeContextIsPresentValidatingMiddleware(OwinMiddleware next) : base(next) { }
 
         public override async Task Invoke(IOwinContext context) {
@@ -74,8 +97,11 @@ namespace DavidLievrouw.OwinRequestScopeContext {
       }
     }
 
-    private class FakeMiddleware : OwinMiddleware {
-      public FakeMiddleware(OwinMiddleware next) : base(next) {
+    class FakeMiddleware : OwinMiddleware {
+      readonly Action _actionWhenInvoked;
+
+      public FakeMiddleware(OwinMiddleware next, Action actionWhenInvoked) : base(next) {
+        _actionWhenInvoked = actionWhenInvoked;
         InvokedWith = new List<IOwinContext>();
       }
 
@@ -83,6 +109,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
 
       public override async Task Invoke(IOwinContext context) {
         InvokedWith.Add(context);
+        _actionWhenInvoked?.Invoke();
         if (Next != null) await Next.Invoke(context).ConfigureAwait(false);
       }
     }

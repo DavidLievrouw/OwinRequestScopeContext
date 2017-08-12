@@ -62,7 +62,8 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="OwinRequestScopeContextMiddlewareTests.cs" />
+    <Compile Include="OwinRequestScopeContextMiddlewareFixture.cs" />
+    <Compile Include="OwinRequestScopeContextFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OwinRequestScopeContext\OwinRequestScopeContext.csproj">

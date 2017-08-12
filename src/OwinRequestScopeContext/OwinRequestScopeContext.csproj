@@ -50,7 +50,11 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\InternalsVisibleTo.cs">
+      <Link>Properties\InternalsVisibleTo.cs</Link>
+    </Compile>
     <Compile Include="AppBuilderExtensions.cs" />
+    <Compile Include="Extensions.ForEach.cs" />
     <Compile Include="IOwinRequestScopeContext.cs" />
     <Compile Include="OwinRequestScopeContext.cs" />
     <Compile Include="OwinRequestScopeContextMiddleware.cs" />
