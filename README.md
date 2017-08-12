@@ -14,15 +14,15 @@ More info in this article: http://odetocode.com/Articles/112.aspx
     }
   }
   
-  public class RequestParametersFromOwinRequestConfigurator {
-    public void Configure(IOwinRequest owinRequest) {
+  public class RequestStartup {
+    public void ExtractMyCustomHeaderValueToRequestContext(IOwinRequest owinRequest) {
       // Set a value in the Items dictionary, available througout the request
       var requestContext = OwinRequestScopeContext.Current;
       requestContext.Items["MyCustomHeaderValue"] = owinRequest.Headers["MyCustomHeader"];
     }
   }
   
-  public class RequestParametersProviderFromOwinRequestScope {
+  public class MyCustomHeaderValueProvider {
     public string ProvideMyCustomHeaderValue() {
       var requestContext = OwinRequestScopeContext.Current;
       if (requestContext == null) return null;
@@ -42,8 +42,8 @@ You can also register IDisposable instances for disposal when the request is com
     public void Dispose() { ... }
   }
 
-  public class RequestParametersFromOwinRequestConfigurator {
-    public void Configure(IOwinRequest owinRequest) {
+  public class RequestStartup {
+    public void InitializeLocalStorageManagerForRequest() {
       var requestContext = OwinRequestScopeContext.Current;
       var localStorageManager = new LocalStorageManager();
       requestContext.Items["MyDisposableObject"] = localStorageManager;
