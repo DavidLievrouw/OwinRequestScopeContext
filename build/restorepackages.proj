@@ -3,8 +3,8 @@
   <PropertyGroup>
     <RootPath>$(MSBuildProjectDirectory)\..</RootPath>
     <SourcePath>$(RootPath)\src</SourcePath>
-	<CorePackagesPath>$(RootPath)\build\packages</CorePackagesPath>
-	<SourcePackagesPath>$(RootPath)\src\packages</SourcePackagesPath>
+    <CorePackagesPath>$(RootPath)\build\packages</CorePackagesPath>
+    <SourcePackagesPath>$(RootPath)\src\packages</SourcePackagesPath>
     <NuGetExe Condition="$(NuGetExe) == ''">$(RootPath)\.nuget\nuget.exe</NuGetExe>
   </PropertyGroup>
 

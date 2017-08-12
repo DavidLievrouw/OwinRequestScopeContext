@@ -11,7 +11,7 @@
         <BuildVersion ParameterType="System.Int32" Output="true" />
         <RevisionVersion ParameterType="System.Int32" Output="true" />
       </ParameterGroup>
-	  
+    
       <Task>
         <Using Namespace="System.Diagnostics" />
         <Code Type="Fragment" Language="cs">

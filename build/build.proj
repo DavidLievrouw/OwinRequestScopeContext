@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-	<ProductName Condition="'$(ProductName)'==''">OwinRequestScopeContext</ProductName>
+  <ProductName Condition="'$(ProductName)'==''">OwinRequestScopeContext</ProductName>
     <BuildConfiguration Condition="'$(BuildConfiguration)' == ''">Release</BuildConfiguration>
     <RootPath>$(MSBuildProjectDirectory)\..</RootPath>
     <SourceDirectory>$(RootPath)\src</SourceDirectory>
     <BuildDirectory>$(RootPath)\build</BuildDirectory>
-	<BuildTargetDirectory>$(BuildDirectory)\build-output</BuildTargetDirectory>
+    <BuildTargetDirectory>$(BuildDirectory)\build-output</BuildTargetDirectory>
     <PackagesDirectory>$(MSBuildProjectDirectory)\packages</PackagesDirectory>
     <MSBuildCommunityTasksPath>$(PackagesDirectory)\MSBuildTasks.1.5.0.235\tools</MSBuildCommunityTasksPath>
     <ExtensionTasksPath>$(PackagesDirectory)\MSBuild.Extension.Pack.1.9.0\build\net40\</ExtensionTasksPath>
@@ -16,11 +16,11 @@
   
   <Target Name="SetVisualStudioVersion">
     <PropertyGroup>
-	  <VisualStudioVersion Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v12.0')">12.0</VisualStudioVersion>
-	  <VisualStudioVersion Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v14.0')">14.0</VisualStudioVersion>
-	  <VisualStudioVersion Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v15.0')">15.0</VisualStudioVersion>
-	</PropertyGroup>
-	<Message Text="Using Visual Studio version '$(VisualStudioVersion)'." />
+      <VisualStudioVersion Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v12.0')">12.0</VisualStudioVersion>
+      <VisualStudioVersion Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v14.0')">14.0</VisualStudioVersion>
+      <VisualStudioVersion Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v15.0')">15.0</VisualStudioVersion>
+    </PropertyGroup>
+    <Message Text="Using Visual Studio version '$(VisualStudioVersion)'." />
   </Target>
   
   <Target Name="InitVersion">
@@ -38,29 +38,29 @@
       <Output TaskParameter="Year" PropertyName="Year" />
     </Time>
 
-	<AssemblyInfo CodeLanguage="CS"
+    <AssemblyInfo CodeLanguage="CS"
                   OutputFile="$(SourceDirectory)\GlobalAssemblyInfo.cs"
-				  AssemblyDescription="This .NET assembly is part of the $(ProductName) project."
+                  AssemblyDescription="This .NET assembly is part of the $(ProductName) project."
                   AssemblyCopyright="Created by David Lievrouw in $(Year), License: MIT"
                   AssemblyConfiguration="$(BuildConfiguration)"
                   AssemblyVersion="$(ProductVersion)"
                   AssemblyFileVersion="$(ProductVersion)"
                   AssemblyInformationalVersion="$(ProductVersion)"
-				  AssemblyProduct="$(ProductName)"
-				  CLSCompliant="false"
-				  ComVisible="false"
-				  AssemblyDelaySign="false" />
+                  AssemblyProduct="$(ProductName)"
+                  CLSCompliant="false"
+                  ComVisible="false"
+                  AssemblyDelaySign="false" />
   </Target>
   
   <Target Name="Build" DependsOnTargets="SetVisualStudioVersion;WriteVersion;">
     <MSBuild Projects="$(MSBuildProjectDirectory)\build_owinrequestscopecontext.proj;"
              Properties="
-			   Configuration=$(BuildConfiguration);
-			   ProductVersion=$(ProductVersion);
-			   VisualStudioVersion=$(VisualStudioVersion);
-			   BuildTargetDirectory=$(BuildTargetDirectory)\OwinRequestScopeContext;"
-			 StopOnFirstFailure="true"
-			 Targets="Build"
-			 BuildInParallel="false"/>
+               Configuration=$(BuildConfiguration);
+               ProductVersion=$(ProductVersion);
+               VisualStudioVersion=$(VisualStudioVersion);
+               BuildTargetDirectory=$(BuildTargetDirectory)\OwinRequestScopeContext;"
+             StopOnFirstFailure="true"
+             Targets="Build"
+             BuildInParallel="false"/>
   </Target>
 </Project>

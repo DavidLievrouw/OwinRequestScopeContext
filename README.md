@@ -6,14 +6,14 @@ With this Owin middleware, you can use OwinRequestScopeContext.Current like Http
 ```cs
   public class Startup {
     public void Configuration(IAppBuilder app) {
-	  // Add it to the owin pipeline
+    // Add it to the owin pipeline
       app.UseRequestScopeContext();
     }
   }
   
   public class RequestParametersFromNancyRequestConfigurator {
     public void Configure(Nancy.Request nancyRequest) {
-	  // Set a value in the Items dictionary, available througout the request
+    // Set a value in the Items dictionary, available througout the request
       var requestContext = OwinRequestScopeContext.Current;
       requestContext.Items["MyCustomHeaderValue"] = nancyRequest.Headers["MyCustomHeader"].FirstOrDefault();
     }

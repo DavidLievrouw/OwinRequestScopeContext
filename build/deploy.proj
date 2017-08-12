@@ -3,21 +3,21 @@
   <PropertyGroup>
     <RootPath>$(MSBuildProjectDirectory)\..</RootPath>
     <BuildDirectory>$(RootPath)\build</BuildDirectory>
-	<BuildTargetDirectory Condition="'$(BuildTargetDirectory)'==''">$(BuildDirectory)\build-output</BuildTargetDirectory>
+    <BuildTargetDirectory Condition="'$(BuildTargetDirectory)'==''">$(BuildDirectory)\build-output</BuildTargetDirectory>
     <DeployTargetDirectory>$(BuildDirectory)\deploy-output</DeployTargetDirectory>
   </PropertyGroup>
 
   <Target Name="InitDeploy">
-	<RemoveDir ContinueOnError="false"
-			   Directories="$(DeployTargetDirectory)"
-			   Condition="Exists('$(DeployTargetDirectory)')" />
+    <RemoveDir ContinueOnError="false"
+               Directories="$(DeployTargetDirectory)"
+               Condition="Exists('$(DeployTargetDirectory)')" />
   </Target>
 
   <Target Name="Deploy" DependsOnTargets="InitDeploy">
     <MSBuild Projects="$(MSBuildProjectDirectory)\deploy_owinrequestscopecontext.proj;"
              Properties="BuildTargetDirectory=$(BuildTargetDirectory);DeployTargetDirectory=$(DeployTargetDirectory);"
-			 StopOnFirstFailure="true"
-			 Targets="Deploy"
-			 BuildInParallel="false"/>
+             StopOnFirstFailure="true"
+             Targets="Deploy"
+             BuildInParallel="false"/>
   </Target>
 </Project>

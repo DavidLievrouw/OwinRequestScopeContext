@@ -36,16 +36,16 @@
   </Target>
   
   <Target Name="InitPack">
-	<RemoveDir ContinueOnError="false"
-			   Directories="$(TargetDirectory)"
-			   Condition="Exists('$(TargetDirectory)')" />
+  <RemoveDir ContinueOnError="false"
+             Directories="$(TargetDirectory)"
+             Condition="Exists('$(TargetDirectory)')" />
   </Target>
   
   <Target Name="WriteVersionInNuSpec">
     <Time>
       <Output TaskParameter="Year" PropertyName="Year" />
     </Time>
-	
+  
     <XmlUpdate
       Prefix="ns"
       Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"

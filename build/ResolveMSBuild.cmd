@@ -15,13 +15,13 @@ FOR /l %%n IN (0,1,%limit%) DO (
   IF EXIST !candidates[%%n]! (
     IF NOT DEFINED MSBUILD (
       SET MSBUILD=!candidates[%%n]!
-	)
+    )
   )
 )
 IF NOT DEFINED MSBUILD (
   SET MSBUILD=!candidates[2]!
 )
-	
+  
 ECHO %currentDate% %currentTime% MSBuild path resolved to "%MSBUILD%".
 ECHO %MSBUILD%
 
