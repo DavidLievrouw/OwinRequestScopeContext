@@ -1,14 +1,19 @@
-﻿using System.Threading.Tasks;
-using Microsoft.Owin;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
-  internal class OwinRequestScopeContextMiddleware : OwinMiddleware {
-    public OwinRequestScopeContextMiddleware(OwinMiddleware next) : base(next) { }
+  internal class OwinRequestScopeContextMiddleware {
+    readonly Func<IDictionary<string, object>, Task> _next;
 
-    public override async Task Invoke(IOwinContext context) {
-      using (var scopeContext = new OwinRequestScopeContext(context)) {
+    public OwinRequestScopeContextMiddleware(Func<IDictionary<string, object>, Task> next) {
+      _next = next;
+    }
+
+    public async Task Invoke(IDictionary<string, object> environment) {
+      using (var scopeContext = new OwinRequestScopeContext(environment)) {
         OwinRequestScopeContext.Current = scopeContext;
-        if (Next != null) await Next.Invoke(context).ConfigureAwait(false);
+        if (_next != null) await _next.Invoke(environment).ConfigureAwait(false);
       }
     }
   }

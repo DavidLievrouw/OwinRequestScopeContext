@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
-using Microsoft.Owin;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
   public class OwinRequestScopeContext : IOwinRequestScopeContext {
     const string CallContextKey = "dl.owin.rscopectx";
     readonly List<IDisposable> _disposables;
 
-    internal OwinRequestScopeContext(IOwinContext owinContext) {
-      OwinContext = owinContext;
+    internal OwinRequestScopeContext(IDictionary<string, object> owinEnvironment) {
+      OwinEnvironment = new ReadOnlyDictionary<string, object>(owinEnvironment);
       Items = new ConcurrentDictionary<string, object>();
       _disposables = new List<IDisposable>();
     }
@@ -23,7 +23,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
 
     internal IEnumerable<IDisposable> Disposables => _disposables;
 
-    public IOwinContext OwinContext { get; }
+    public IReadOnlyDictionary<string, object> OwinEnvironment { get; }
 
     public IDictionary<string, object> Items { get; }
 
@@ -46,10 +46,9 @@ namespace DavidLievrouw.OwinRequestScopeContext {
 
       CallContext.FreeNamedDataSlot(CallContextKey);
 
-      if (disposalExceptions.Any())
-        throw new AggregateException(
-          "One or more exception occurred while disposing items that were registered for disposal.",
-          disposalExceptions);
+      if (disposalExceptions.Any()) {
+        throw new AggregateException("One or more exception occurred while disposing items that were registered for disposal.", disposalExceptions);
+      }
     }
   }
 }

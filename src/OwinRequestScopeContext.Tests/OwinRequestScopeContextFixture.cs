@@ -1,29 +1,29 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using FakeItEasy;
 using FluentAssertions;
-using Microsoft.Owin;
 using NUnit.Framework;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
   [TestFixture]
   public class OwinRequestScopeContextFixture {
-    IOwinContext _owinContext;
+    IDictionary<string, object> _owinEnvironment;
     OwinRequestScopeContext _sut;
 
     [SetUp]
     public virtual void SetUp() {
-      _owinContext = A.Fake<IOwinContext>();
-      _sut = new OwinRequestScopeContext(_owinContext);
+      _owinEnvironment = new Dictionary<string, object> {{"the meaning of life, the universe, and everything", 42}};
+      _sut = new OwinRequestScopeContext(_owinEnvironment);
     }
 
     [TestFixture]
     public class OwinContext : OwinRequestScopeContextFixture {
       [Test]
       public void ReturnsOwinContextFromConstructor() {
-        _sut.OwinContext.Should().Be(_owinContext);
+        _sut.OwinEnvironment.ShouldBeEquivalentTo(_owinEnvironment);
       }
     }
 
@@ -122,7 +122,8 @@ namespace DavidLievrouw.OwinRequestScopeContext {
         A.CallTo(() => secondDisposable.Dispose()).Throws(failureReason2);
 
         Action act = () => _sut.Dispose();
-        act.ShouldThrow<AggregateException>().Where(_ => _.InnerExceptions.SequenceEqual(new Exception[] { failureReason1, failureReason2 }));
+        act.ShouldThrow<AggregateException>()
+          .Where(_ => _.InnerExceptions.SequenceEqual(new Exception[] {failureReason1, failureReason2}));
 
         A.CallTo(() => firstDisposable.Dispose()).MustHaveHappened();
         A.CallTo(() => secondDisposable.Dispose()).MustHaveHappened();
