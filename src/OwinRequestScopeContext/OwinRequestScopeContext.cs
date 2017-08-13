@@ -18,7 +18,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
 
     public static IOwinRequestScopeContext Current {
       get => (IOwinRequestScopeContext) CallContext.LogicalGetData(CallContextKey);
-      set => CallContext.LogicalSetData(CallContextKey, value);
+      internal set => CallContext.LogicalSetData(CallContextKey, value);
     }
 
     internal IEnumerable<IDisposable> Disposables => _disposables;
