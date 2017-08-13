@@ -64,7 +64,7 @@ Remark: When any .Dispose() call fails, the other registered instances are still
 
 ## Sample project
 
-In the GitHub repository, there is a [sample project](./tree/master/src/Sample).
+In the GitHub repository, there is a [sample project](tree/master/src/Sample).
 
 ## Change log
 
