@@ -19,6 +19,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..</SolutionDir>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -114,8 +115,10 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <!-- Begin web project support, without Visual Studio installation on build agents: https://github.com/pdonald/nuget-webtargets -->
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != '' And Exists('$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets')" />
+  <Import Project="$(SolutionDir)\packages\MSBuild.Microsoft.VisualStudio.Web.targets.14.0.0.3\tools\VSToolsPath\WebApplications\Microsoft.WebApplication.targets" Condition="('$(VSToolsPath)' == '' Or !Exists('$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets')) And Exists('$(SolutionDir)\packages\MSBuild.Microsoft.VisualStudio.Web.targets.14.0.0.3\tools\VSToolsPath\WebApplications\Microsoft.WebApplication.targets')" />
+  <!-- End web project support -->
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
@@ -134,11 +137,10 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
+    <!-- We need this custom nuget package, for build agents that do not have a full Visual Studio installation (to support the "Package" MSBuild target) -->
+    <Message Text="Checking existance of file $(SolutionDir)\packages\MSBuild.Microsoft.VisualStudio.Web.targets.14.0.0.3\tools\VSToolsPath\WebApplications\Microsoft.WebApplication.targets..." Importance="High" />
+    <Error Condition="!Exists('$(SolutionDir)\packages\MSBuild.Microsoft.VisualStudio.Web.targets.14.0.0.3\tools\VSToolsPath\WebApplications\Microsoft.WebApplication.targets')" Text="The Microsoft.WebApplication.targets file cannot be found." />
+    <Message Condition="Exists('$(SolutionDir)\packages\MSBuild.Microsoft.VisualStudio.Web.targets.14.0.0.3\tools\VSToolsPath\WebApplications\Microsoft.WebApplication.targets')" Text="OK" Importance="High" />
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
