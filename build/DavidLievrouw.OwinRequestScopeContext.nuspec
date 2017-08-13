@@ -11,7 +11,6 @@
     <summary>With this Owin middleware, you can use OwinRequestScopeContext.Current like HttpContext.Current, but without a dependency to System.Web.</summary>
     <description>With this Owin middleware, you can use OwinRequestScopeContext.Current like HttpContext.Current, but without a dependency to System.Web.</description>
     <dependencies>
-      <dependency id="Microsoft.Owin" version="3.1.0" />
       <dependency id="Owin" version="1.0" />
     </dependencies>
   </metadata>
