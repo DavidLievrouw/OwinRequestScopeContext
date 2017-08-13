@@ -64,5 +64,14 @@ Source-only package: [![NuGet Status](http://img.shields.io/nuget/v/DavidLievrou
 
 ## Change log
 
+v2.0.0 - 2017-08-13
+- Make OwinRequestScopeContext.Current setter internal.
+- Changes to v1.1.0 are actually breaking changes, so major version bump needed.
+
+v1.1.0 - 2017-08-13
+- Remove dependency to Microsoft.Owin package.
+- OwinContext is no longer a member of IOwinRequestScopeContext. It is replaced by OwinEnvironment.
+- OwinRequestScopeContext.Current is no longer internal.
+
 v1.0.0 - 2017-08-12
 - Initial release (binary and sources).
