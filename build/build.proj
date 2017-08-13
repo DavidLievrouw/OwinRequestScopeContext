@@ -62,5 +62,14 @@
              StopOnFirstFailure="true"
              Targets="Build"
              BuildInParallel="false"/>
+    <MSBuild Projects="$(MSBuildProjectDirectory)\build_sample.proj;"
+             Properties="
+               Configuration=$(BuildConfiguration);
+               ProductVersion=$(ProductVersion);
+               VisualStudioVersion=$(VisualStudioVersion);
+               BuildTargetDirectory=$(BuildTargetDirectory)\Sample;"
+             StopOnFirstFailure="true"
+             Targets="Build"
+             BuildInParallel="false"/>
   </Target>
 </Project>

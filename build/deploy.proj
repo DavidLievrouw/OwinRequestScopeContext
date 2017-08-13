@@ -19,5 +19,10 @@
              StopOnFirstFailure="true"
              Targets="Deploy"
              BuildInParallel="false"/>
+    <MSBuild Projects="$(MSBuildProjectDirectory)\deploy_sample.proj;"
+             Properties="BuildTargetDirectory=$(BuildTargetDirectory);DeployTargetDirectory=$(DeployTargetDirectory);"
+             StopOnFirstFailure="true"
+             Targets="Deploy"
+             BuildInParallel="false"/>
   </Target>
 </Project>
