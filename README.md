@@ -5,6 +5,12 @@ With this Owin middleware, you can use OwinRequestScopeContext.Current like Http
 It uses CallContext internally. Which means that it is accessible when a request is handled on different threads, and using async/await.
 More info in this article: http://odetocode.com/Articles/112.aspx
 
+## NuGet
+
+Binary package: [![NuGet Status](http://img.shields.io/nuget/v/DavidLievrouw.OwinRequestScopeContext.svg?style=flat-square)](https://www.nuget.org/packages/DavidLievrouw.OwinRequestScopeContext/)
+
+Source-only package: [![NuGet Status](http://img.shields.io/nuget/v/DavidLievrouw.OwinRequestScopeContext.Sources.svg?style=flat-square)](https://www.nuget.org/packages/DavidLievrouw.OwinRequestScopeContext.Sources/)
+
 ## Example usage
 ```cs
   public class Startup {
@@ -56,11 +62,9 @@ You can also register IDisposable instances for disposal when the request is com
 
 Remark: When any .Dispose() call fails, the other registered instances are still disposed. Only afterwards, an AggregateException is thrown.
 
-## NuGet
+## Sample project
 
-Binary package: [![NuGet Status](http://img.shields.io/nuget/v/DavidLievrouw.OwinRequestScopeContext.svg?style=flat-square)](https://www.nuget.org/packages/DavidLievrouw.OwinRequestScopeContext/)
-
-Source-only package: [![NuGet Status](http://img.shields.io/nuget/v/DavidLievrouw.OwinRequestScopeContext.Sources.svg?style=flat-square)](https://www.nuget.org/packages/DavidLievrouw.OwinRequestScopeContext.Sources/)
+In the GitHub repository, there is a [sample project](./tree/master/src/Sample).
 
 ## Change log
 
