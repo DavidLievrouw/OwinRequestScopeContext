@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "Sample\Sample.csproj", "{46361DC1-C587-4D96-95E3-669B3E228AB8}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OwinRequestScopeContext", "OwinRequestScopeContext\OwinRequestScopeContext.csproj", "{8D3859AC-EBCF-4346-B437-C099B4D2B03F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OwinRequestScopeContext.Tests", "OwinRequestScopeContext.Tests\OwinRequestScopeContext.Tests.csproj", "{7A18A2FC-9DD8-473D-A19D-8B689DDD3BE0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{672EFF80-2A12-4BE6-A665-0F71C136EEF2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +17,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{46361DC1-C587-4D96-95E3-669B3E228AB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46361DC1-C587-4D96-95E3-669B3E228AB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46361DC1-C587-4D96-95E3-669B3E228AB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46361DC1-C587-4D96-95E3-669B3E228AB8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8D3859AC-EBCF-4346-B437-C099B4D2B03F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8D3859AC-EBCF-4346-B437-C099B4D2B03F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D3859AC-EBCF-4346-B437-C099B4D2B03F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -24,5 +32,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{46361DC1-C587-4D96-95E3-669B3E228AB8} = {672EFF80-2A12-4BE6-A665-0F71C136EEF2}
 	EndGlobalSection
 EndGlobal
