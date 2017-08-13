@@ -8,13 +8,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     public override async Task Invoke(IOwinContext context) {
       using (var scopeContext = new OwinRequestScopeContext(context)) {
         OwinRequestScopeContext.Current = scopeContext;
-
-        try {
-          if (Next != null) await Next.Invoke(context).ConfigureAwait(false);
-        }
-        finally {
-          OwinRequestScopeContext.FreeContextSlot();
-        }
+        if (Next != null) await Next.Invoke(context).ConfigureAwait(false);
       }
     }
   }

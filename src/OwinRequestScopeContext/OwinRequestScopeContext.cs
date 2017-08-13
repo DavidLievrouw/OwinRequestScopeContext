@@ -6,11 +6,11 @@ using System.Runtime.Remoting.Messaging;
 using Microsoft.Owin;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
-  internal class OwinRequestScopeContext : IOwinRequestScopeContext {
+  public class OwinRequestScopeContext : IOwinRequestScopeContext {
     const string CallContextKey = "dl.owin.rscopectx";
     readonly List<IDisposable> _disposables;
 
-    public OwinRequestScopeContext(IOwinContext owinContext) {
+    internal OwinRequestScopeContext(IOwinContext owinContext) {
       OwinContext = owinContext;
       Items = new ConcurrentDictionary<string, object>();
       _disposables = new List<IDisposable>();
@@ -44,14 +44,12 @@ namespace DavidLievrouw.OwinRequestScopeContext {
         }
       });
 
+      CallContext.FreeNamedDataSlot(CallContextKey);
+
       if (disposalExceptions.Any())
         throw new AggregateException(
           "One or more exception occurred while disposing items that were registered for disposal.",
           disposalExceptions);
-    }
-
-    internal static void FreeContextSlot() {
-      CallContext.FreeNamedDataSlot(CallContextKey);
     }
   }
 }
