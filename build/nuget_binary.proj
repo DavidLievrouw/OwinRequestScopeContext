@@ -2,36 +2,14 @@
 <Project DefaultTargets="Pack" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <RootPath>$(MSBuildProjectDirectory)\..</RootPath>
-    <PackagesPath>$(MSBuildProjectDirectory)\packages</PackagesPath>
     <BuildDirectory>$(RootPath)\build</BuildDirectory>
     <TargetDirectory Condition="$(TargetDirectory) == ''">$(BuildDirectory)\deploy-output\nuget</TargetDirectory>
     <NuGetExe>$(RootPath)\.nuget\nuget.exe</NuGetExe>
-    <MSBuildCommunityTasksPath>$(PackagesPath)\MSBuildTasks.1.5.0.235\tools</MSBuildCommunityTasksPath>
   </PropertyGroup>
-  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets"/>
 
-  <Target Name="WriteVersionInNuSpec">
-    <Time>
-      <Output TaskParameter="Year" PropertyName="Year" />
-    </Time>
-  
-    <XmlUpdate
-      Prefix="ns"
-      Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
-      XmlFileName="DavidLievrouw.OwinRequestScopeContext.nuspec"
-      XPath="/package/metadata/version"
-      Value="$(NuSpecVersion)" />
-    <XmlUpdate
-      Prefix="ns"
-      Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
-      XmlFileName="DavidLievrouw.OwinRequestScopeContext.nuspec"
-      XPath="/package/metadata/copyright"
-      Value="Copyright (c) $(Year) David Lievrouw" />
-  </Target>
-  
-  <Target Name="Pack" DependsOnTargets="WriteVersionInNuSpec;">
+  <Target Name="Pack">
     <MakeDir ContinueOnError="false" Directories="$(TargetDirectory)" Condition="!Exists('$(TargetDirectory)')" />
-    <Exec Command='&quot;$(NuGetExe)&quot; pack &quot;$(MSBuildProjectDirectory)\DavidLievrouw.OwinRequestScopeContext.nuspec&quot; -Version $(NuSpecVersion) -NonInteractive -o &quot;$(TargetDirectory)&quot;' />  
+    <Exec Command='&quot;$(NuGetExe)&quot; pack &quot;$(MSBuildProjectDirectory)\DavidLievrouw.OwinRequestScopeContext.nuspec&quot; -Version $(NuSpecVersion) -NonInteractive -Properties &quot;NuSpecVersion=$(NuSpecVersion)&quot; -o &quot;$(TargetDirectory)&quot;' />  
   </Target>
 
   <Target Name="Push">

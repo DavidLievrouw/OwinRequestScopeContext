@@ -2,7 +2,7 @@
 <package xmlns:ns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>DavidLievrouw.OwinRequestScopeContext.Sources</id>
-    <version>2.0.0</version>
+    <version>$NuSpecVersion$</version>
     <authors>David Lievrouw</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>https://github.com/DavidLievrouw/OwinRequestScopeContext/blob/master/LICENSE</licenseUrl>
@@ -15,6 +15,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\src\OwinRequestScopeContext\*.cs" target="content\App_Packages\DavidLievrouw.OwinRequestScopeContext.Sources.1.0.0" />
+    <file src="..\src\OwinRequestScopeContext\*.cs" target="content\App_Packages\DavidLievrouw.OwinRequestScopeContext.Sources.$NuSpecVersion$" />
   </files>
 </package>
