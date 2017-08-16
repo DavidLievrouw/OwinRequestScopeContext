@@ -97,6 +97,15 @@ namespace DavidLievrouw.OwinRequestScopeContext {
         act.ShouldThrow<InvalidOperationException>().Where(_ => _.Equals(failureInPipeline));
         A.CallTo(() => disposable.Dispose()).MustHaveHappened();
       }
+
+      [Test]
+      public void WhenThereIsAnOwinRequestScopeContextAlready_ThrowsInvalidOperationException() {
+        _sut = new OwinRequestScopeContextMiddleware(async owinEnvironment => {
+          await new OwinRequestScopeContextMiddleware(null).Invoke(owinEnvironment).ConfigureAwait(false);
+        });
+        Func<Task> act = () => _sut.Invoke(_owinEnvironment);
+        act.ShouldThrow<InvalidOperationException>();
+      }
     }
   }
 }
