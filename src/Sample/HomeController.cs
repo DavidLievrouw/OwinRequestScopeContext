@@ -13,9 +13,11 @@ namespace Sample {
       await Task.Delay(500).ConfigureAwait(false);
 
       var myDisposableObject = OwinRequestScopeContext.Current.Items["MyDisposableObject"] as MyDisposableObject;
+      var myNonDisposableObject = OwinRequestScopeContext.Current.Items["MyNonDisposableObject"];
+      var value = myDisposableObject?.Value + "\n" + myNonDisposableObject;
 
       var res = Request.CreateResponse(HttpStatusCode.OK);
-      res.Content = new StringContent(myDisposableObject?.Value, Encoding.UTF8, "text/plain");
+      res.Content = new StringContent(value, Encoding.UTF8, "text/plain");
       return res;
     }
   }

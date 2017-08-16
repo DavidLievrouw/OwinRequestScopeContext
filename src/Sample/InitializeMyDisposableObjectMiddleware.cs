@@ -20,6 +20,7 @@ namespace Sample {
       // Add some setting to the dictionary
       var requestScopeContext = OwinRequestScopeContext.Current;
       requestScopeContext.Items["MyDisposableObject"] = myDisposableObject;
+      requestScopeContext.Items["MyNonDisposableObject"] = 42;
 
       // Register item for disposal
       requestScopeContext.RegisterForDisposal(myDisposableObject);
