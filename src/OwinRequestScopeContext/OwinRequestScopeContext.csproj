@@ -53,8 +53,11 @@
     <Compile Include="AppBuilderExtensions.cs" />
     <Compile Include="Extensions.ForEach.cs" />
     <Compile Include="IOwinRequestScopeContext.cs" />
+    <Compile Include="IOwinRequestScopeContextItems.cs" />
     <Compile Include="OwinRequestScopeContext.cs" />
+    <Compile Include="OwinRequestScopeContextItems.cs" />
     <Compile Include="OwinRequestScopeContextMiddleware.cs" />
+    <Compile Include="OwinRequestScopeContextOptions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

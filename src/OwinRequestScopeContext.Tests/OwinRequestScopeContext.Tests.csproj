@@ -59,6 +59,8 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="ExtensionsTests.ForEach.cs" />
+    <Compile Include="OwinRequestScopeContextItemsTests.cs" />
     <Compile Include="OwinRequestScopeContextMiddlewareFixture.cs" />
     <Compile Include="OwinRequestScopeContextFixture.cs" />
   </ItemGroup>
@@ -69,6 +71,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppBuilderExtensionsTests.UseRequestScopeContext.cs" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

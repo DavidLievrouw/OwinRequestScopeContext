@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +15,16 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     [SetUp]
     public virtual void SetUp() {
       _owinEnvironment = new Dictionary<string, object> {{"the meaning of life, the universe, and everything", 42}};
-      _sut = new OwinRequestScopeContext(_owinEnvironment);
+      _sut = new OwinRequestScopeContext(_owinEnvironment, OwinRequestScopeContextOptions.Default);
+    }
+
+    [TestFixture]
+    public class Construction : OwinRequestScopeContextFixture {
+      [Test]
+      public void GivenNullOptions_ThrowsArgumentNullException() {
+        Action act = () => new OwinRequestScopeContext(_owinEnvironment, null);
+        act.ShouldThrow<ArgumentNullException>();
+      }
     }
 
     [TestFixture]
@@ -35,8 +43,10 @@ namespace DavidLievrouw.OwinRequestScopeContext {
       }
 
       [Test]
-      public void IsThreadSafeCollection() {
-        _sut.Items.Should().BeAssignableTo<ConcurrentDictionary<string, object>>();
+      public void IntializesExpectedProperties() {
+        _sut.Items.Should().NotBeNull().And.BeAssignableTo<OwinRequestScopeContextItems>();
+        _sut.OwinEnvironment.ShouldBeEquivalentTo(_owinEnvironment);
+        _sut.Disposables.Should().NotBeNull();
       }
     }
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -10,9 +9,13 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     const string CallContextKey = "dl.owin.rscopectx";
     readonly List<IDisposable> _disposables;
 
-    internal OwinRequestScopeContext(IDictionary<string, object> owinEnvironment) {
+    internal OwinRequestScopeContext(IDictionary<string, object> owinEnvironment, OwinRequestScopeContextOptions options) {
+      if (options == null) throw new ArgumentNullException(paramName: nameof(options));
+      Options = options;
+
+      Items = new OwinRequestScopeContextItems(options);
+
       OwinEnvironment = new ReadOnlyDictionary<string, object>(owinEnvironment);
-      Items = new ConcurrentDictionary<string, object>();
       _disposables = new List<IDisposable>();
     }
 
@@ -22,10 +25,11 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     internal IEnumerable<IDisposable> Disposables => _disposables;
+    internal OwinRequestScopeContextOptions Options { get; }
 
     public IReadOnlyDictionary<string, object> OwinEnvironment { get; }
 
-    public IDictionary<string, object> Items { get; }
+    public IOwinRequestScopeContextItems Items { get; }
 
     public void RegisterForDisposal(IDisposable disposable) {
       if (disposable == null) throw new ArgumentNullException(paramName: nameof(disposable));

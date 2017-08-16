@@ -9,19 +9,29 @@ namespace DavidLievrouw.OwinRequestScopeContext {
   [TestFixture]
   public class OwinRequestScopeContextMiddlewareFixture {
     Func<IDictionary<string, object>, Task> _next;
+    OwinRequestScopeContextOptions _options;
     OwinRequestScopeContextMiddleware _sut;
 
     [SetUp]
     public virtual void SetUp() {
       _next = owinEnvironment => Task.CompletedTask;
-      _sut = new OwinRequestScopeContextMiddleware(_next);
+      _options = new OwinRequestScopeContextOptions {
+        ItemKeyEqualityComparer = StringComparer.OrdinalIgnoreCase
+      };
+      _sut = new OwinRequestScopeContextMiddleware(_next, _options);
     }
 
     [TestFixture]
     public class Construction : OwinRequestScopeContextMiddlewareFixture {
       [Test]
       public void AllowsNullNext() {
-        Action act = () => new OwinRequestScopeContextMiddleware(null);
+        Action act = () => new OwinRequestScopeContextMiddleware(null, _options);
+        act.ShouldNotThrow();
+      }
+
+      [Test]
+      public void AllowsNullOptions() {
+        Action act = () => new OwinRequestScopeContextMiddleware(_next, null);
         act.ShouldNotThrow();
       }
     }
@@ -48,7 +58,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
         _sut = new OwinRequestScopeContextMiddleware(owinEnvironment => {
           nextHasBeenInvoked = true;
           return Task.CompletedTask;
-        });
+        }, _options);
         await _sut.Invoke(_owinEnvironment).ConfigureAwait(false);
         nextHasBeenInvoked.Should().BeTrue();
       }
@@ -61,7 +71,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
           interceptedOwinEnvironmentInNext = OwinRequestScopeContext.Current.OwinEnvironment;
           OwinRequestScopeContext.Current.Should().NotBeNull();
           return Task.CompletedTask;
-        });
+        }, _options);
         await sut.Invoke(_owinEnvironment).ConfigureAwait(false);
 
         interceptedOwinEnvironmentInNext.ShouldBeEquivalentTo(_owinEnvironment);
@@ -69,7 +79,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
 
       [Test]
       public void WhenThereIsNoNext_DoesNotCrash() {
-        var sut = new OwinRequestScopeContextMiddleware(null);
+        var sut = new OwinRequestScopeContextMiddleware(null, _options);
         Func<Task> act = () => sut.Invoke(_owinEnvironment);
         act.ShouldNotThrow();
       }
@@ -80,7 +90,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
         _sut = new OwinRequestScopeContextMiddleware(owinEnvironment => {
           OwinRequestScopeContext.Current.RegisterForDisposal(disposable);
           return Task.CompletedTask;
-        });
+        }, _options);
         await _sut.Invoke(_owinEnvironment).ConfigureAwait(false);
         A.CallTo(() => disposable.Dispose()).MustHaveHappened();
       }
@@ -92,7 +102,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
         _sut = new OwinRequestScopeContextMiddleware(owinEnvironment => {
           OwinRequestScopeContext.Current.RegisterForDisposal(disposable);
           throw failureInPipeline;
-        });
+        }, _options);
         Func<Task> act = () => _sut.Invoke(_owinEnvironment);
         act.ShouldThrow<InvalidOperationException>().Where(_ => _.Equals(failureInPipeline));
         A.CallTo(() => disposable.Dispose()).MustHaveHappened();
@@ -100,11 +110,36 @@ namespace DavidLievrouw.OwinRequestScopeContext {
 
       [Test]
       public void WhenThereIsAnOwinRequestScopeContextAlready_ThrowsInvalidOperationException() {
-        _sut = new OwinRequestScopeContextMiddleware(async owinEnvironment => {
-          await new OwinRequestScopeContextMiddleware(null).Invoke(owinEnvironment).ConfigureAwait(false);
-        });
+        _sut = new OwinRequestScopeContextMiddleware(
+          async owinEnvironment => {
+            await new OwinRequestScopeContextMiddleware(null, _options).Invoke(owinEnvironment).ConfigureAwait(false);
+          }, _options);
         Func<Task> act = () => _sut.Invoke(_owinEnvironment);
         act.ShouldThrow<InvalidOperationException>();
+      }
+
+      [Test]
+      public async Task GivenNullOptions_InitializesContextWithDefaultOptions() {
+        OwinRequestScopeContextOptions interceptedOptions = null;
+        var sut = new OwinRequestScopeContextMiddleware(owinEnvironment => {
+          interceptedOptions = ((OwinRequestScopeContext) OwinRequestScopeContext.Current).Options;
+          return Task.CompletedTask;
+        }, null);
+        await sut.Invoke(_owinEnvironment).ConfigureAwait(false);
+        interceptedOptions.Should().NotBeNull();
+        interceptedOptions.ItemKeyEqualityComparer.Should().Be(OwinRequestScopeContextOptions.Default.ItemKeyEqualityComparer);
+      }
+
+      [Test]
+      public async Task GivenOptions_InitializesContextWithGivenOptions() {
+        OwinRequestScopeContextOptions interceptedOptions = null;
+        var sut = new OwinRequestScopeContextMiddleware(owinEnvironment => {
+          interceptedOptions = ((OwinRequestScopeContext) OwinRequestScopeContext.Current).Options;
+          return Task.CompletedTask;
+        }, _options);
+        await sut.Invoke(_owinEnvironment).ConfigureAwait(false);
+        interceptedOptions.Should().NotBeNull();
+        interceptedOptions.ItemKeyEqualityComparer.Should().Be(_options.ItemKeyEqualityComparer);
       }
     }
   }
