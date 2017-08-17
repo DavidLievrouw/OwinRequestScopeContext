@@ -5,12 +5,14 @@ using System.Collections.Generic;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
   public class OwinRequestScopeContextItems : IOwinRequestScopeContextItems {
-    public OwinRequestScopeContextItems(OwinRequestScopeContextOptions options) {
-      if (options == null) throw new ArgumentNullException(paramName: nameof(options));
-      InnerDictionary = new ConcurrentDictionary<string, object>(options.ItemKeyEqualityComparer);
+    public OwinRequestScopeContextItems(IEqualityComparer<string> keyComparer) {
+      if (keyComparer == null) throw new ArgumentNullException(paramName: nameof(keyComparer));
+      InnerDictionary = new ConcurrentDictionary<string, object>(keyComparer);
+      KeyComparer = keyComparer;
     }
 
     internal IDictionary<string, object> InnerDictionary { get; }
+    internal IEqualityComparer<string> KeyComparer { get; }
 
     public IEnumerator<KeyValuePair<string, object>> GetEnumerator() {
       return InnerDictionary.GetEnumerator();
@@ -75,6 +77,10 @@ namespace DavidLievrouw.OwinRequestScopeContext {
 
     public void Add(string key, IDisposable value, bool disposeWhenRequestIsCompleted) {
       InnerDictionary.Add(key, value);
+    }
+
+    public void Dispose() {
+      
     }
   }
 }

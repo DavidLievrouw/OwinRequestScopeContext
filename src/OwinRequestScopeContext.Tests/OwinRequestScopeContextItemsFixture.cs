@@ -7,40 +7,40 @@ using NUnit.Framework;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
   [TestFixture]
-  public class OwinRequestScopeContextItemsTests {
+  public class OwinRequestScopeContextItemsFixture {
     OwinRequestScopeContextItems _sut;
+    IEqualityComparer<string> _keyComparer;
 
     [SetUp]
     public void SetUp() {
-      _sut = new OwinRequestScopeContextItems(OwinRequestScopeContextOptions.Default) {{"A", 1}, {"B", 2}};
+      _keyComparer = StringComparer.InvariantCulture;
+      _sut = new OwinRequestScopeContextItems(_keyComparer) {{"A", 1}, {"B", 2}};
     }
 
     [TestFixture]
-    public class Construction : OwinRequestScopeContextItemsTests {
+    public class Construction : OwinRequestScopeContextItemsFixture {
       [Test]
-      public void GivenNullOptions_Throws() {
+      public void GivenNullKeyComparer_Throws() {
         Action act = () => new OwinRequestScopeContextItems(null);
         act.ShouldThrow<ArgumentNullException>();
       }
 
       [Test]
-      public void UsesSpecifiedComparerFromOptions() {
-        var options1 = new OwinRequestScopeContextOptions {
-          ItemKeyEqualityComparer = StringComparer.Ordinal
-        };
-        var sut1 = new OwinRequestScopeContextItems(options1) {{"abc", 1}};
+      public void UsesSpecifiedComparer() {
+        var sut1 = new OwinRequestScopeContextItems(StringComparer.Ordinal) {{"abc", 1}};
         sut1.ContainsKey("ABC").Should().BeFalse();
-
-        var options2 = new OwinRequestScopeContextOptions {
-          ItemKeyEqualityComparer = StringComparer.OrdinalIgnoreCase
-        };
-        var sut2 = new OwinRequestScopeContextItems(options2) {{"abc", 1}};
+        var sut2 = new OwinRequestScopeContextItems(StringComparer.OrdinalIgnoreCase) {{"abc", 1}};
         sut2.ContainsKey("ABC").Should().BeTrue();
       }
     }
 
     [TestFixture]
-    public class GetEnumerator : OwinRequestScopeContextItemsTests {
+    public class Dispose : OwinRequestScopeContextItemsFixture {
+      // ToDo
+    }
+
+    [TestFixture]
+    public class GetEnumerator : OwinRequestScopeContextItemsFixture {
       [Test]
       public void EnumeratesAllKeyValuePairs() {
         var actualItems = new List<KeyValuePair<string, object>>();
@@ -59,7 +59,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
-    public class Clear : OwinRequestScopeContextItemsTests {
+    public class Clear : OwinRequestScopeContextItemsFixture {
       [Test]
       public void ClearsAllItemsFromDictionary() {
         _sut.Count.Should().BeGreaterThan(0);
@@ -69,7 +69,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
-    public class Contains : OwinRequestScopeContextItemsTests {
+    public class Contains : OwinRequestScopeContextItemsFixture {
       [Test]
       public void WhenDictionaryContainsItem_ReturnsTrue() {
         var itemToFind = _sut.InnerDictionary.ElementAt(0);
@@ -84,7 +84,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
-    public class CopyTo : OwinRequestScopeContextItemsTests {
+    public class CopyTo : OwinRequestScopeContextItemsFixture {
       [Test]
       public void GivenNullArrayToCopyTo_ThrowsArgumentNullException() {
         Action act = () => _sut.CopyTo(null, 0);
@@ -112,7 +112,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
-    public class Remove : OwinRequestScopeContextItemsTests {
+    public class Remove : OwinRequestScopeContextItemsFixture {
       [Test]
       public void WhenDictionaryContainsItem_RemovesItemAndReturnsTrue() {
         var itemToRemove = _sut.InnerDictionary.ElementAt(0);
@@ -141,7 +141,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
-    public class Count : OwinRequestScopeContextItemsTests {
+    public class Count : OwinRequestScopeContextItemsFixture {
       [Test]
       public void ReturnsNumberOfItemsInDictionary() {
         _sut.Count.Should().Be(2);
@@ -149,7 +149,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
-    public class IsReadOnly : OwinRequestScopeContextItemsTests {
+    public class IsReadOnly : OwinRequestScopeContextItemsFixture {
       [Test]
       public void ReturnsFalse() {
         _sut.IsReadOnly.Should().BeFalse();
@@ -157,7 +157,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
-    public class ContainsKey : OwinRequestScopeContextItemsTests {
+    public class ContainsKey : OwinRequestScopeContextItemsFixture {
       [Test]
       public void WhenDictionaryContainsKey_ReturnsTrue() {
         var itemToFind = _sut.InnerDictionary.ElementAt(0).Key;
@@ -172,7 +172,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
-    public class RemoveKey : OwinRequestScopeContextItemsTests {
+    public class RemoveKey : OwinRequestScopeContextItemsFixture {
       [Test]
       public void WhenDictionaryContainsKey_RemovesItemAndReturnsTrue() {
         var itemToRemove = _sut.InnerDictionary.ElementAt(0).Key;
@@ -201,7 +201,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
-    public class TryGetValue : OwinRequestScopeContextItemsTests {
+    public class TryGetValue : OwinRequestScopeContextItemsFixture {
       [Test]
       public void WhenDictionaryContainsKey_SetsOutputItemAndReturnsTrue() {
         var itemToFind = _sut.InnerDictionary.ElementAt(0).Key;
@@ -219,10 +219,10 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
-    public class Keys : OwinRequestScopeContextItemsTests {
+    public class Keys : OwinRequestScopeContextItemsFixture {
       [Test]
       public void WhenDictionaryContainsNoItems_ReturnsEmptyResult() {
-        _sut = new OwinRequestScopeContextItems(OwinRequestScopeContextOptions.Default);
+        _sut = new OwinRequestScopeContextItems(StringComparer.InvariantCulture);
         _sut.Keys.Should().NotBeNull().And.BeEmpty();
       }
 
@@ -234,10 +234,10 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
-    public class Values : OwinRequestScopeContextItemsTests {
+    public class Values : OwinRequestScopeContextItemsFixture {
       [Test]
       public void WhenDictionaryContainsNoItems_ReturnsEmptyResult() {
-        _sut = new OwinRequestScopeContextItems(OwinRequestScopeContextOptions.Default);
+        _sut = new OwinRequestScopeContextItems(StringComparer.InvariantCulture);
         _sut.Values.Should().NotBeNull().And.BeEmpty();
       }
 
@@ -249,7 +249,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
-    public class GetEnumeratorForUntypedIEnumerable : OwinRequestScopeContextItemsTests {
+    public class GetEnumeratorForUntypedIEnumerable : OwinRequestScopeContextItemsFixture {
       [Test]
       public void EnumeratesAllKeyValuePairs() {
         var actualItems = new List<object>();
@@ -267,7 +267,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
-    public class Indexer : OwinRequestScopeContextItemsTests {
+    public class Indexer : OwinRequestScopeContextItemsFixture {
       [TestFixture]
       public class Getter : Indexer {
         [Test]
@@ -314,7 +314,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
-    public class AddObject : OwinRequestScopeContextItemsTests {
+    public class AddObject : OwinRequestScopeContextItemsFixture {
       [Test]
       public void GivenNewItem_AddsItemToDictionary() {
         var newKey = "newKey";
@@ -338,7 +338,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
-    public class AddKeyValuePair : OwinRequestScopeContextItemsTests {
+    public class AddKeyValuePair : OwinRequestScopeContextItemsFixture {
       [Test]
       public void GivenNewItem_AddsItemToDictionary() {
         var newItem = new KeyValuePair<string, object>("newKey", value: new object());
@@ -363,7 +363,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
-    public class AddDisposable : OwinRequestScopeContextItemsTests {
+    public class AddDisposable : OwinRequestScopeContextItemsFixture {
       [Test]
       public void GivenNewDisposableItem_AddsItemToDictionary() {
         var newKey = "newKey";
@@ -389,7 +389,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
-    public class AddDisposableWithFlag : OwinRequestScopeContextItemsTests {
+    public class AddDisposableWithFlag : OwinRequestScopeContextItemsFixture {
       [Test]
       public void GivenNewDisposableItem_AddsItemToDictionary() {
         var newKey = "newKey";

@@ -6,9 +6,9 @@ using NUnit.Framework;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
   [TestFixture]
-  public class ExtensionsTests {
+  public class ExtensionsFixture {
     [TestFixture]
-    public class ForEach : ExtensionsTests {
+    public class ForEach : ExtensionsFixture {
       [SetUp]
       public void SetUp() {
         SourceItem.ResetPerformedActionCount();
@@ -66,7 +66,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
-    public class ForEachWithIndex : ExtensionsTests {
+    public class ForEachWithIndex : ExtensionsFixture {
       [SetUp]
       public void SetUp() {
         SourceItem.ResetPerformedActions();

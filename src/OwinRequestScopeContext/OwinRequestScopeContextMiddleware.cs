@@ -15,7 +15,12 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     public async Task Invoke(IDictionary<string, object> environment) {
       if (OwinRequestScopeContext.Current != null) throw new InvalidOperationException($"There is already an {OwinRequestScopeContext.Current.GetType().Name} for the current request scope.");
 
-      using (var scopeContext = new OwinRequestScopeContext(environment, _options ?? OwinRequestScopeContextOptions.Default)) {
+      var keyComparer = _options?.ItemKeyEqualityComparer ?? OwinRequestScopeContextOptions.Default.ItemKeyEqualityComparer;
+
+      using (var scopeContext = new OwinRequestScopeContext(
+        environment, 
+        new OwinRequestScopeContextItems(keyComparer), 
+        _options ?? OwinRequestScopeContextOptions.Default)) {
         OwinRequestScopeContext.Current = scopeContext;
         if (_next != null) await _next.Invoke(environment).ConfigureAwait(false);
       }

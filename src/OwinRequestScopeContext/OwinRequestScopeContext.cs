@@ -9,11 +9,12 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     const string CallContextKey = "dl.owin.rscopectx";
     readonly List<IDisposable> _disposables;
 
-    internal OwinRequestScopeContext(IDictionary<string, object> owinEnvironment, OwinRequestScopeContextOptions options) {
+    internal OwinRequestScopeContext(IDictionary<string, object> owinEnvironment, IOwinRequestScopeContextItems items, OwinRequestScopeContextOptions options) {
+      if (items == null) throw new ArgumentNullException(paramName: nameof(items));
       if (options == null) throw new ArgumentNullException(paramName: nameof(options));
-      Options = options;
 
-      Items = new OwinRequestScopeContextItems(options);
+      Items = items;
+      Options = options;
 
       OwinEnvironment = new ReadOnlyDictionary<string, object>(owinEnvironment);
       _disposables = new List<IDisposable>();
@@ -37,6 +38,8 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     public void Dispose() {
+      Items.Dispose();
+
       var disposalExceptions = new List<Exception>();
 
       Disposables.ForEach(disposable => {

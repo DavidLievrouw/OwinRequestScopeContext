@@ -48,6 +48,10 @@ namespace DavidLievrouw.OwinRequestScopeContext {
 
       [Test]
       public async Task FreesContextSlotAfterwards() {
+        _sut = new OwinRequestScopeContextMiddleware(owinEnvironment => {
+          OwinRequestScopeContext.Current.Should().NotBeNull();
+          return Task.CompletedTask;
+        }, _options);
         await _sut.Invoke(_owinEnvironment).ConfigureAwait(false);
         OwinRequestScopeContext.Current.Should().BeNull();
       }
@@ -111,9 +115,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
       [Test]
       public void WhenThereIsAnOwinRequestScopeContextAlready_ThrowsInvalidOperationException() {
         _sut = new OwinRequestScopeContextMiddleware(
-          async owinEnvironment => {
-            await new OwinRequestScopeContextMiddleware(null, _options).Invoke(owinEnvironment).ConfigureAwait(false);
-          }, _options);
+          async owinEnvironment => { await new OwinRequestScopeContextMiddleware(null, _options).Invoke(owinEnvironment).ConfigureAwait(false); }, _options);
         Func<Task> act = () => _sut.Invoke(_owinEnvironment);
         act.ShouldThrow<InvalidOperationException>();
       }
@@ -121,25 +123,33 @@ namespace DavidLievrouw.OwinRequestScopeContext {
       [Test]
       public async Task GivenNullOptions_InitializesContextWithDefaultOptions() {
         OwinRequestScopeContextOptions interceptedOptions = null;
+        IEqualityComparer<string> interceptedKeyComparer = null;
         var sut = new OwinRequestScopeContextMiddleware(owinEnvironment => {
           interceptedOptions = ((OwinRequestScopeContext) OwinRequestScopeContext.Current).Options;
+          interceptedKeyComparer = ((OwinRequestScopeContextItems) OwinRequestScopeContext.Current.Items).KeyComparer;
           return Task.CompletedTask;
         }, null);
         await sut.Invoke(_owinEnvironment).ConfigureAwait(false);
         interceptedOptions.Should().NotBeNull();
         interceptedOptions.ItemKeyEqualityComparer.Should().Be(OwinRequestScopeContextOptions.Default.ItemKeyEqualityComparer);
+        interceptedKeyComparer.Should().NotBeNull();
+        interceptedKeyComparer.Should().Be(OwinRequestScopeContextOptions.Default.ItemKeyEqualityComparer);
       }
 
       [Test]
       public async Task GivenOptions_InitializesContextWithGivenOptions() {
         OwinRequestScopeContextOptions interceptedOptions = null;
+        IEqualityComparer<string> interceptedKeyComparer = null;
         var sut = new OwinRequestScopeContextMiddleware(owinEnvironment => {
           interceptedOptions = ((OwinRequestScopeContext) OwinRequestScopeContext.Current).Options;
+          interceptedKeyComparer = ((OwinRequestScopeContextItems) OwinRequestScopeContext.Current.Items).KeyComparer;
           return Task.CompletedTask;
         }, _options);
         await sut.Invoke(_owinEnvironment).ConfigureAwait(false);
         interceptedOptions.Should().NotBeNull();
         interceptedOptions.ItemKeyEqualityComparer.Should().Be(_options.ItemKeyEqualityComparer);
+        interceptedKeyComparer.Should().NotBeNull();
+        interceptedKeyComparer.Should().Be(_options.ItemKeyEqualityComparer);
       }
     }
   }

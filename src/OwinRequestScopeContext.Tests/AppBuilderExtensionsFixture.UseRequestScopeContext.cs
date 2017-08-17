@@ -5,9 +5,9 @@ using Owin;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
   [TestFixture]
-  public class AppBuilderExtensionsTests {
+  public class AppBuilderExtensionsFixture {
     [TestFixture]
-    public class UseRequestScopeContext : AppBuilderExtensionsTests {
+    public class UseRequestScopeContext : AppBuilderExtensionsFixture {
       IAppBuilder _app;
 
       [SetUp]
