@@ -27,6 +27,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
 
     public void Clear() {
       InnerDictionary.Clear();
+      Disposables.Clear();
     }
 
     public bool Contains(KeyValuePair<string, object> item) {

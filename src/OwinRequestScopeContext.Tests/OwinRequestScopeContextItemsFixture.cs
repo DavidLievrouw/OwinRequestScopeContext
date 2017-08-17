@@ -121,6 +121,13 @@ namespace DavidLievrouw.OwinRequestScopeContext {
         _sut.Clear();
         _sut.Count.Should().Be(0);
       }
+
+      [Test]
+      public void ClearsDisposableRegistrations() {
+        _sut.Add("D1", new MyDisposableObject(), true);
+        _sut.Clear();
+        _sut.Disposables.Count.Should().Be(0);
+      }
     }
 
     [TestFixture]
