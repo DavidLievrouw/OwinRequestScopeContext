@@ -45,6 +45,20 @@ namespace DavidLievrouw.OwinRequestScopeContext {
       }
 
       [Test]
+      public void DisposesOnlyItemsThatWereRequestedToBeDisposed() {
+        var firstDisposable = A.Fake<IDisposable>();
+        var secondDisposable = A.Fake<IDisposable>();
+        var nonDisposable = A.Fake<object>();
+        _sut.Add("D1", firstDisposable, true);
+        _sut.Add("D2", secondDisposable, false);
+        _sut.Add("O1", nonDisposable);
+        _sut.Dispose();
+        A.CallTo(() => firstDisposable.Dispose()).MustHaveHappened();
+        A.CallTo(() => secondDisposable.Dispose()).MustNotHaveHappened();
+        A.CallTo(nonDisposable).Where(_ => _.Method.Name == "Dispose").MustNotHaveHappened();
+      }
+
+      [Test]
       public void DisposesAllRegisteredItems() {
         var firstDisposable = A.Fake<IDisposable>();
         var secondDisposable = A.Fake<IDisposable>();
