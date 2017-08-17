@@ -2,17 +2,26 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
-  public class OwinRequestScopeContextItems : IOwinRequestScopeContextItems {
+  public class OwinRequestScopeContextItems : IInternalOwinRequestScopeContextItems {
     public OwinRequestScopeContextItems(IEqualityComparer<string> keyComparer) {
       if (keyComparer == null) throw new ArgumentNullException(paramName: nameof(keyComparer));
       InnerDictionary = new ConcurrentDictionary<string, object>(keyComparer);
       KeyComparer = keyComparer;
+      Disposables = new List<IDisposable>();
     }
 
+    // For unit tests
     internal IDictionary<string, object> InnerDictionary { get; }
     internal IEqualityComparer<string> KeyComparer { get; }
+    internal ICollection<IDisposable> Disposables { get; }
+
+    // For obsolete RegisterForDisposal method
+    IDictionary<string, object> IInternalOwinRequestScopeContextItems.InnerDictionary => InnerDictionary;
+    IEqualityComparer<string> IInternalOwinRequestScopeContextItems.KeyComparer => KeyComparer;
+    ICollection<IDisposable> IInternalOwinRequestScopeContextItems.Disposables => Disposables;
 
     public IEnumerator<KeyValuePair<string, object>> GetEnumerator() {
       return InnerDictionary.GetEnumerator();
@@ -77,10 +86,23 @@ namespace DavidLievrouw.OwinRequestScopeContext {
 
     public void Add(string key, IDisposable value, bool disposeWhenRequestIsCompleted) {
       InnerDictionary.Add(key, value);
+      if (disposeWhenRequestIsCompleted) Disposables.Add(value);
     }
 
     public void Dispose() {
-      
+      var disposalExceptions = new List<Exception>();
+
+      Disposables.ForEach(disposable => {
+        try {
+          disposable.Dispose();
+        }
+        catch (Exception ex) {
+          disposalExceptions.Add(ex);
+        }
+      });
+
+      if (disposalExceptions.Any())
+        throw new AggregateException("One or more exception occurred while disposing items that were registered for disposal.", disposalExceptions);
     }
   }
 }

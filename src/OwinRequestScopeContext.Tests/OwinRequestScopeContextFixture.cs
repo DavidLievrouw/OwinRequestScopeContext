@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using FakeItEasy;
 using FluentAssertions;
 using NUnit.Framework;
@@ -16,7 +14,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     [SetUp]
     public virtual void SetUp() {
       _owinEnvironment = new Dictionary<string, object> {{"the meaning of life, the universe, and everything", 42}};
-      _items = A.Fake<IOwinRequestScopeContextItems>();
+      _items = A.Fake<IInternalOwinRequestScopeContextItems>();
       _sut = new OwinRequestScopeContext(_owinEnvironment, _items, OwinRequestScopeContextOptions.Default);
     }
 
@@ -60,7 +58,6 @@ namespace DavidLievrouw.OwinRequestScopeContext {
       public void IntializesExpectedProperties() {
         _sut.Items.Should().NotBeNull();
         _sut.OwinEnvironment.ShouldBeEquivalentTo(_owinEnvironment);
-        _sut.Disposables.Should().NotBeNull();
       }
     }
 
@@ -76,7 +73,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
 
       [Test]
       public void HasNoDisposablesByDefault() {
-        _sut.Disposables.Should().NotBeNull().And.BeEmpty();
+        ((IInternalOwinRequestScopeContextItems)_sut.Items).Disposables.Should().NotBeNull().And.BeEmpty();
       }
 
       [Test]
@@ -88,14 +85,16 @@ namespace DavidLievrouw.OwinRequestScopeContext {
       [Test]
       public void AddsItemToListOfDisposables() {
         _sut.RegisterForDisposal(_disposable);
-        _sut.Disposables.ShouldBeEquivalentTo(expectation: new[] {_disposable});
+        A.CallTo(() => ((IInternalOwinRequestScopeContextItems)_sut.Items).Disposables.Add(_disposable))
+          .MustHaveHappened();
       }
 
       [Test]
       public void AddsItemToListOfDisposables_EvenIfItIsRegisteredAlready() {
         _sut.RegisterForDisposal(_disposable);
         _sut.RegisterForDisposal(_disposable);
-        _sut.Disposables.ShouldBeEquivalentTo(expectation: new[] {_disposable, _disposable});
+        A.CallTo(() => ((IInternalOwinRequestScopeContextItems)_sut.Items).Disposables.Add(_disposable))
+          .MustHaveHappened(Repeated.Exactly.Times(2));
       }
     }
 
@@ -109,56 +108,10 @@ namespace DavidLievrouw.OwinRequestScopeContext {
       }
 
       [Test]
-      public void WhenNoItemsAreRegisteredForDisposal_DoesNotThrow() {
-        Action act = () => _sut.Dispose();
-        act.ShouldNotThrow();
-      }
-
-      [Test]
-      public void DisposesAllRegisteredItems() {
-        var firstDisposable = A.Fake<IDisposable>();
-        var secondDisposable = A.Fake<IDisposable>();
-        _sut.RegisterForDisposal(firstDisposable);
-        _sut.RegisterForDisposal(secondDisposable);
+      public void FreesContextSlotAfterwards() {
+        OwinRequestScopeContext.Current = _sut;
         _sut.Dispose();
-        A.CallTo(() => firstDisposable.Dispose()).MustHaveHappened();
-        A.CallTo(() => secondDisposable.Dispose()).MustHaveHappened();
-      }
-
-      [Test]
-      public void WhenADisposableIsRegisteredMultipleTimes_ItIsCalledThatAmountOfTimes() {
-        var firstDisposable = A.Fake<IDisposable>();
-        var secondDisposable = A.Fake<IDisposable>();
-        _sut.RegisterForDisposal(firstDisposable);
-        _sut.RegisterForDisposal(secondDisposable);
-        _sut.RegisterForDisposal(firstDisposable);
-        _sut.Dispose();
-        A.CallTo(() => firstDisposable.Dispose()).MustHaveHappened(Repeated.Exactly.Twice);
-        A.CallTo(() => secondDisposable.Dispose()).MustHaveHappened(Repeated.Exactly.Once);
-      }
-
-      [Test]
-      public void WhenDisposalOfAnItemFails_StillDisposesOthers_ThrowsAggregateException() {
-        var firstDisposable = A.Fake<IDisposable>();
-        var secondDisposable = A.Fake<IDisposable>();
-        var thirdDisposable = A.Fake<IDisposable>();
-        _sut.RegisterForDisposal(firstDisposable);
-        _sut.RegisterForDisposal(secondDisposable);
-        _sut.RegisterForDisposal(thirdDisposable);
-
-        var failureReason1 = new InvalidOperationException("I am the cause of the failure of the first disposable");
-        A.CallTo(() => firstDisposable.Dispose()).Throws(failureReason1);
-
-        var failureReason2 = new InvalidDataException("I am the cause of the failure of the second disposable");
-        A.CallTo(() => secondDisposable.Dispose()).Throws(failureReason2);
-
-        Action act = () => _sut.Dispose();
-        act.ShouldThrow<AggregateException>()
-          .Where(_ => _.InnerExceptions.SequenceEqual(new Exception[] {failureReason1, failureReason2}));
-
-        A.CallTo(() => firstDisposable.Dispose()).MustHaveHappened();
-        A.CallTo(() => secondDisposable.Dispose()).MustHaveHappened();
-        A.CallTo(() => thirdDisposable.Dispose()).MustHaveHappened();
+        OwinRequestScopeContext.Current.Should().BeNull();
       }
     }
   }

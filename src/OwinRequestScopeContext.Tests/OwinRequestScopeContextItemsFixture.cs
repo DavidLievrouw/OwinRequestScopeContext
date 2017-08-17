@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using FakeItEasy;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -36,7 +38,46 @@ namespace DavidLievrouw.OwinRequestScopeContext {
 
     [TestFixture]
     public class Dispose : OwinRequestScopeContextItemsFixture {
-      // ToDo
+      [Test]
+      public void WhenNoItemsAreRegisteredForDisposal_DoesNotThrow() {
+        Action act = () => _sut.Dispose();
+        act.ShouldNotThrow();
+      }
+
+      [Test]
+      public void DisposesAllRegisteredItems() {
+        var firstDisposable = A.Fake<IDisposable>();
+        var secondDisposable = A.Fake<IDisposable>();
+        _sut.Add("D1", firstDisposable, true);
+        _sut.Add("D2", secondDisposable, true);
+        _sut.Dispose();
+        A.CallTo(() => firstDisposable.Dispose()).MustHaveHappened();
+        A.CallTo(() => secondDisposable.Dispose()).MustHaveHappened();
+      }
+
+      [Test]
+      public void WhenDisposalOfAnItemFails_StillDisposesOthers_ThrowsAggregateException() {
+        var firstDisposable = A.Fake<IDisposable>();
+        var secondDisposable = A.Fake<IDisposable>();
+        var thirdDisposable = A.Fake<IDisposable>();
+        _sut.Add("D1", firstDisposable, true);
+        _sut.Add("D2", secondDisposable, true);
+        _sut.Add("D3", thirdDisposable, true);
+
+        var failureReason1 = new InvalidOperationException("I am the cause of the failure of the first disposable");
+        A.CallTo(() => firstDisposable.Dispose()).Throws(failureReason1);
+
+        var failureReason2 = new InvalidDataException("I am the cause of the failure of the second disposable");
+        A.CallTo(() => secondDisposable.Dispose()).Throws(failureReason2);
+
+        Action act = () => _sut.Dispose();
+        act.ShouldThrow<AggregateException>()
+          .Where(_ => _.InnerExceptions.SequenceEqual(new Exception[] {failureReason1, failureReason2}));
+
+        A.CallTo(() => firstDisposable.Dispose()).MustHaveHappened();
+        A.CallTo(() => secondDisposable.Dispose()).MustHaveHappened();
+        A.CallTo(() => thirdDisposable.Dispose()).MustHaveHappened();
+      }
     }
 
     [TestFixture]

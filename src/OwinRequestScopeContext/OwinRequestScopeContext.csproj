@@ -53,6 +53,7 @@
     </Compile>
     <Compile Include="AppBuilderExtensions.cs" />
     <Compile Include="Extensions.ForEach.cs" />
+    <Compile Include="IInternalOwinRequestScopeContextItems.cs" />
     <Compile Include="IOwinRequestScopeContext.cs" />
     <Compile Include="IOwinRequestScopeContextItems.cs" />
     <Compile Include="OwinRequestScopeContext.cs" />
