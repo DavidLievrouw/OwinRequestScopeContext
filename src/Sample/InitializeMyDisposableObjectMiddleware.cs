@@ -13,17 +13,18 @@ namespace Sample {
     }
 
     public async Task Invoke(IDictionary<string, object> environment) {
-      var myDisposableObject = new MyDisposableObject {
-        Value = DateTime.Now.ToString("HH:mm:ss,fff")
-      };
-
-      // Add some setting to the dictionary
       var requestScopeContext = OwinRequestScopeContext.Current;
-      requestScopeContext.Items["MyDisposableObject"] = myDisposableObject;
-      requestScopeContext.Items["MyNonDisposableObject"] = 42;
 
-      // Register item for disposal
-      requestScopeContext.RegisterForDisposal(myDisposableObject);
+      // Add item to the request scope context, that will be disposed when the requests completes
+      var myDisposableObject_ToBeDisposed = new MyDisposableObject { Value = "To dispose: " + DateTime.Now.ToString("HH:mm:ss,fff") };
+      requestScopeContext.Items.Add("MyDisposableObject_ToBeDisposed", myDisposableObject_ToBeDisposed, true);
+
+      // Add item to the request scope context, that will not be disposed when the requests completes
+      var myDisposableObject_NotToBeDisposed = new MyDisposableObject { Value = "Not to dispose: " + DateTime.Now.ToString("HH:mm:ss,fff") };
+      requestScopeContext.Items.Add("MyDisposableObject_NotToBeDisposed", myDisposableObject_NotToBeDisposed, false);
+
+      // Add some other (non-IDisposable) item
+      requestScopeContext.Items.Add("MyNonDisposableObject", 42);
 
       await _next.Invoke(environment).ConfigureAwait(false);
     }
