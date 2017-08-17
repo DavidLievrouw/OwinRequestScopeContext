@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
+  // Internal helper interface for backward compatibility, to be able to acces the Disposables collection in obsolete members
   internal interface IInternalOwinRequestScopeContextItems : IOwinRequestScopeContextItems {
-    IDictionary<string, object> InnerDictionary { get; }
-    IEqualityComparer<string> KeyComparer { get; }
     ICollection<IDisposable> Disposables { get; }
   }
 }

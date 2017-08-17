@@ -19,8 +19,6 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     internal ICollection<IDisposable> Disposables { get; }
 
     // For obsolete RegisterForDisposal method
-    IDictionary<string, object> IInternalOwinRequestScopeContextItems.InnerDictionary => InnerDictionary;
-    IEqualityComparer<string> IInternalOwinRequestScopeContextItems.KeyComparer => KeyComparer;
     ICollection<IDisposable> IInternalOwinRequestScopeContextItems.Disposables => Disposables;
 
     public IEnumerator<KeyValuePair<string, object>> GetEnumerator() {
