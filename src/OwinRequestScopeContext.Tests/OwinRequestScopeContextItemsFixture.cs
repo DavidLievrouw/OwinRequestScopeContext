@@ -193,6 +193,23 @@ namespace DavidLievrouw.OwinRequestScopeContext {
         var actualItems = (ICollection<KeyValuePair<string, object>>) _sut;
         actualItems.ShouldBeEquivalentTo(expectedItems);
       }
+
+      [Test]
+      public void WhenItemIsRemovedThatIsMarkedForDisposal_AlsoRemovesThatMark() {
+        var disposableValue = new MyDisposableObject();
+
+        _sut.Add("D1", disposableValue, true);
+        _sut.Disposables.ShouldBeEquivalentTo(expectation: new[] {disposableValue});
+        var itemToRemove1 = _sut.Single(_ => _.Key == "D1");
+        _sut.Remove(itemToRemove1);
+        _sut.Disposables.Should().BeEmpty();
+
+        _sut.Add("D1", disposableValue, false);
+        _sut.Disposables.ShouldBeEquivalentTo(Enumerable.Empty<IDisposable>());
+        var itemToRemove2 = _sut.Single(_ => _.Key == "D1");
+        _sut.Remove(itemToRemove2);
+        _sut.Disposables.ShouldBeEquivalentTo(Enumerable.Empty<IDisposable>());
+      }
     }
 
     [TestFixture]
@@ -252,6 +269,21 @@ namespace DavidLievrouw.OwinRequestScopeContext {
         };
         var actualItems = (ICollection<KeyValuePair<string, object>>) _sut;
         actualItems.ShouldBeEquivalentTo(expectedItems);
+      }
+
+      [Test]
+      public void WhenItemIsRemovedThatIsMarkedForDisposal_AlsoRemovesThatMark() {
+        var disposableValue = new MyDisposableObject();
+
+        _sut.Add("D1", disposableValue, true);
+        _sut.Disposables.ShouldBeEquivalentTo(expectation: new[] {disposableValue});
+        _sut.Remove("D1");
+        _sut.Disposables.Should().BeEmpty();
+
+        _sut.Add("D1", disposableValue, false);
+        _sut.Disposables.ShouldBeEquivalentTo(Enumerable.Empty<IDisposable>());
+        _sut.Remove("D1");
+        _sut.Disposables.ShouldBeEquivalentTo(Enumerable.Empty<IDisposable>());
       }
     }
 

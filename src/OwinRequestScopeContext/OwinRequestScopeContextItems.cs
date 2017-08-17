@@ -16,7 +16,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     // For unit tests
     internal IDictionary<string, object> InnerDictionary { get; }
     internal IEqualityComparer<string> KeyComparer { get; }
-    internal ICollection<IDisposable> Disposables { get; }
+    internal List<IDisposable> Disposables { get; }
 
     // For obsolete RegisterForDisposal method
     ICollection<IDisposable> IInternalOwinRequestScopeContextItems.Disposables => Disposables;
@@ -38,7 +38,9 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     public bool Remove(KeyValuePair<string, object> item) {
-      return InnerDictionary.Remove(item);
+      var isRemoved = InnerDictionary.Remove(item);
+      if (isRemoved && item.Value is IDisposable) Disposables.RemoveAll(_ => item.Value.Equals(_));
+      return isRemoved;
     }
 
     public int Count => InnerDictionary.Count;
@@ -50,7 +52,12 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     public bool Remove(string key) {
-      return InnerDictionary.Remove(key);
+      if (!TryGetValue(key, out object correspondingValue)) return false;
+
+      var isRemoved = InnerDictionary.Remove(key);
+      if (isRemoved && correspondingValue is IDisposable) Disposables.RemoveAll(_ => correspondingValue.Equals(_));
+
+      return isRemoved;
     }
 
     public bool TryGetValue(string key, out object value) {
