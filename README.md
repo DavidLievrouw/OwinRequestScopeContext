@@ -24,7 +24,7 @@ Source-only package: [![NuGet Status](http://img.shields.io/nuget/v/DavidLievrou
     public void ExtractMyCustomHeaderValueToRequestContext(IOwinRequest owinRequest) {
       // Set a value in the Items dictionary, available througout the request
       var requestContext = OwinRequestScopeContext.Current;
-      requestContext.Items["MyCustomHeaderValue"] = owinRequest.Headers["MyCustomHeader"];
+      requestContext.Items.Add("MyCustomHeaderValue", owinRequest.Headers["MyCustomHeader"]);
     }
   }
   
@@ -47,15 +47,26 @@ You can also register IDisposable instances for disposal when the request is com
     ...
     public void Dispose() { ... }
   }
-
+  
+  public class GlobalStorageManager : IDisposable {
+    ...
+    public void Dispose() { ... }
+  }
+  
   public class RequestStartup {
     public void InitializeLocalStorageManagerForRequest() {
-      var requestContext = OwinRequestScopeContext.Current;
-      var localStorageManager = new LocalStorageManager();
-      requestContext.Items["MyDisposableObject"] = localStorageManager;
+      var requestScopeContext = OwinRequestScopeContext.Current;
 
-      // Dispose the localStorageManager instance when the request is completed
-      requestContext.RegisterForDisposal(localStorageManager);
+      // Add item to the request scope context, that will be disposed when the requests completes
+      var localStorageManager_ToDispose = new LocalStorageManager();
+      requestScopeContext.Items.Add("LocalStorageManager_ToDispose", localStorageManager_ToDispose, true);
+
+      // Add item to the request scope context, that will not be disposed when the requests completes
+      var globalStorageManager_NotToBeDisposed = new GlobalStorageManager();
+      requestScopeContext.Items.Add("GlobalStorageManager_NotToBeDisposed", globalStorageManager_NotToBeDisposed, false);
+
+      // Add some other (non-IDisposable) item
+      requestScopeContext.Items.Add("MyNonDisposableObject", 42);
     }
   }
 ```
@@ -67,6 +78,12 @@ Remark: When any .Dispose() call fails, the other registered instances are still
 In the GitHub repository, there is a [sample project](https://github.com/DavidLievrouw/OwinRequestScopeContext/tree/master/src/Sample).
 
 ## Change log
+
+v2.1.0 - 2017-08-24
+- Add a more explicit way of adding items to the request scope that need to be disposed.
+- Mark the old way of registering for disposal as obsolete.
+- Add indexer to OwinRequestScopeContext.
+- Update sample and README.
 
 v2.0.0 - 2017-08-13
 - Make OwinRequestScopeContext.Current setter internal.
