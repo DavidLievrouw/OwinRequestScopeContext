@@ -13,6 +13,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets"/>
   <Import Project="$(ExtensionTasksPath)\MSBuild.Extension.Pack.targets"/>
+  <Import Project="Utils.targets"/>
   
   <Target Name="SetVisualStudioVersion">
     <PropertyGroup>
@@ -37,7 +38,13 @@
     <Time>
       <Output TaskParameter="Year" PropertyName="Year" />
     </Time>
-
+	
+    <ReplaceFileText 
+      InputFilename="$(RootPath)\appveyor.yml" 
+      OutputFilename="$(RootPath)\appveyor.yml" 
+      MatchExpression="version: [0-9\.]+(\{build\}){1}" 
+      ReplacementText="version: $(ProductVersionPrefix).{build}" />
+	  
     <AssemblyInfo CodeLanguage="CS"
                   OutputFile="$(SourceDirectory)\GlobalAssemblyInfo.cs"
                   AssemblyDescription="This .NET assembly is part of the $(ProductName) project."
