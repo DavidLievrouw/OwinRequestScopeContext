@@ -5,11 +5,13 @@ With this Owin middleware, you can use OwinRequestScopeContext.Current like Http
 It uses CallContext internally. Which means that it is accessible when a request is handled on different threads, and using async/await.
 More info in this article: http://odetocode.com/Articles/112.aspx
 
-## NuGet
+## Status
 
 Binary package: [![NuGet Status](http://img.shields.io/nuget/v/DavidLievrouw.OwinRequestScopeContext.svg?style=flat-square)](https://www.nuget.org/packages/DavidLievrouw.OwinRequestScopeContext/)
 
 Source-only package: [![NuGet Status](http://img.shields.io/nuget/v/DavidLievrouw.OwinRequestScopeContext.Sources.svg?style=flat-square)](https://www.nuget.org/packages/DavidLievrouw.OwinRequestScopeContext.Sources/)
+
+CI: [![Build status](https://ci.appveyor.com/api/projects/status/pws1ko5s0kbqhaau?svg=true)](https://ci.appveyor.com/project/DavidLievrouw/owinrequestscopecontext)
 
 ## Example usage
 ```cs

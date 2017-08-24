@@ -1,0 +1,19 @@
+version: 2.1.0.{build}
+image: Visual Studio 2017
+configuration: Release
+platform: Any CPU
+nuget:
+  disable_publish_on_pr: true
+build:
+  project: build/OwinRequestScopeContext.proj
+  verbosity: normal
+test:
+  assemblies:
+    only:
+    - build\test-output\*.Tests.dll
+artifacts:
+- path: build\deploy-output
+  name: Deploy-output
+- path: build\log
+  name: Logs
+deploy: off

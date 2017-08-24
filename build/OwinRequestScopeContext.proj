@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="BuildDeployPackNuGet" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="BuildDeployPackNuGetTest" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <RootPath>$(MSBuildProjectDirectory)\..</RootPath>
     <RestorePackagesScriptDirectory>$(RootPath)\build</RestorePackagesScriptDirectory>
@@ -64,5 +64,11 @@
     <CallTarget Targets="Build" />
     <CallTarget Targets="Deploy" />
     <CallTarget Targets="PackNuGet" />
+  </Target>
+  <Target Name="BuildDeployPackNuGetTest">
+    <CallTarget Targets="Build" />
+    <CallTarget Targets="Deploy" />
+    <CallTarget Targets="PackNuGet" />
+    <CallTarget Targets="UnitTest" />
   </Target>
 </Project>
