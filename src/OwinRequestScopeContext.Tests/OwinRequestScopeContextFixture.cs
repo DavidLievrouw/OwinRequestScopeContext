@@ -62,6 +62,39 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     [TestFixture]
+    public class Indexer : OwinRequestScopeContextFixture {
+      [Test]
+      public void GivenNullKey_ThrowsArgumentNullException() {
+        Action act = () => {
+          var dummy = _sut[null];
+        };
+        act.ShouldThrow<ArgumentNullException>();
+      }
+
+      [Test]
+      public void GivenKeyThatDoesNotExist_ReturnsNull() {
+        var invalidKey = "TheInvalidKey";
+        object valueInDictionary = null;
+        A.CallTo(() => _items.TryGetValue(invalidKey, out valueInDictionary))
+          .Returns(false);
+        var actual = _sut[invalidKey];
+        actual.Should().BeNull();
+      }
+
+      [Test]
+      public void GivenKeyThatDoesExist_ReturnsCorrespondingValue() {
+        var validKey = "ExistingKey";
+        var expected = new object();
+        object valueInDictionary = null;
+        A.CallTo(() => _items.TryGetValue(validKey, out valueInDictionary))
+          .Returns(true)
+          .AssignsOutAndRefParameters(expected);
+        var actual = _sut[validKey];
+        actual.Should().Be(expected);
+      }
+    }
+
+    [TestFixture]
     public class RegisterForDisposal : OwinRequestScopeContextFixture {
       IDisposable _disposable;
 
@@ -73,7 +106,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
 
       [Test]
       public void HasNoDisposablesByDefault() {
-        ((IInternalOwinRequestScopeContextItems)_sut.Items).Disposables.Should().NotBeNull().And.BeEmpty();
+        ((IInternalOwinRequestScopeContextItems) _sut.Items).Disposables.Should().NotBeNull().And.BeEmpty();
       }
 
       [Test]
@@ -85,7 +118,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
       [Test]
       public void AddsItemToListOfDisposables() {
         _sut.RegisterForDisposal(_disposable);
-        A.CallTo(() => ((IInternalOwinRequestScopeContextItems)_sut.Items).Disposables.Add(_disposable))
+        A.CallTo(() => ((IInternalOwinRequestScopeContextItems) _sut.Items).Disposables.Add(_disposable))
           .MustHaveHappened();
       }
 
@@ -93,8 +126,8 @@ namespace DavidLievrouw.OwinRequestScopeContext {
       public void AddsItemToListOfDisposables_EvenIfItIsRegisteredAlready() {
         _sut.RegisterForDisposal(_disposable);
         _sut.RegisterForDisposal(_disposable);
-        A.CallTo(() => ((IInternalOwinRequestScopeContextItems)_sut.Items).Disposables.Add(_disposable))
-          .MustHaveHappened(Repeated.Exactly.Times(2));
+        A.CallTo(() => ((IInternalOwinRequestScopeContextItems) _sut.Items).Disposables.Add(_disposable))
+          .MustHaveHappened(repeatConstraint: Repeated.Exactly.Times(2));
       }
     }
 

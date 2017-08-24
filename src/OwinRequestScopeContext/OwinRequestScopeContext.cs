@@ -31,6 +31,13 @@ namespace DavidLievrouw.OwinRequestScopeContext {
 
     public IOwinRequestScopeContextItems Items { get; }
 
+    public object this[string key] {
+      get {
+        if (key == null) throw new ArgumentNullException(paramName: nameof(key));
+        return Items.TryGetValue(key, out object value) ? value : null;
+      }
+    }
+
     public void RegisterForDisposal(IDisposable disposable) {
       if (disposable == null) throw new ArgumentNullException(paramName: nameof(disposable));
       ((IInternalOwinRequestScopeContextItems)Items).Disposables.Add(disposable);
