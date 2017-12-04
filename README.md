@@ -59,11 +59,11 @@ You can also register IDisposable instances for disposal when the request is com
     public void InitializeLocalStorageManagerForRequest() {
       var requestScopeContext = OwinRequestScopeContext.Current;
 
-      // Add item to the request scope context, that will be disposed when the requests completes
+      // Add item to the request scope context, that will be disposed when the request completes
       var localStorageManager_ToDispose = new LocalStorageManager();
       requestScopeContext.Items.Add("LocalStorageManager_ToDispose", localStorageManager_ToDispose, true);
 
-      // Add item to the request scope context, that will not be disposed when the requests completes
+      // Add item to the request scope context, that will not be disposed when the request completes
       var globalStorageManager_NotToBeDisposed = new GlobalStorageManager();
       requestScopeContext.Items.Add("GlobalStorageManager_NotToBeDisposed", globalStorageManager_NotToBeDisposed, false);
 
