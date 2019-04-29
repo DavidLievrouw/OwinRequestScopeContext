@@ -7,7 +7,7 @@
     <owners>David Lievrouw</owners>
     <copyright>Created by David Lievrouw, License: MIT</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <licenseUrl>https://github.com/DavidLievrouw/OwinRequestScopeContext/blob/master/LICENSE</licenseUrl>
+    <license type="expression">MIT</license>
     <title>DavidLievrouw.OwinRequestScopeContext</title>
     <projectUrl>https://github.com/DavidLievrouw/OwinRequestScopeContext</projectUrl>
     <summary>With this Owin middleware, you can use OwinRequestScopeContext.Current like HttpContext.Current, but without a dependency to System.Web.</summary>
@@ -16,7 +16,7 @@
       <group targetFramework="netstandard2.0">
         <dependency id="Owin" version="[1.0,)" />
       </group>        
-      <group targetFramework="net461">
+      <group targetFramework="net462">
         <dependency id="Owin" version="[1.0,)" />
       </group>
     </dependencies>
