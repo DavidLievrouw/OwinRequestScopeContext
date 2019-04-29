@@ -6,8 +6,5 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     IReadOnlyDictionary<string, object> OwinEnvironment { get; }
     IOwinRequestScopeContextItems Items { get; }
     object this[string key] { get; }
-
-    [Obsolete("Please use Items.Add(string key, IDisposable disposable, bool disposeWhenRequestIsCompleted).")]
-    void RegisterForDisposal(IDisposable disposable);
   }
 }

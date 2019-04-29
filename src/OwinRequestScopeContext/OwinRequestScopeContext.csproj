@@ -1,28 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
     <RootNamespace>DavidLievrouw.OwinRequestScopeContext</RootNamespace>
     <AssemblyName>DavidLievrouw.OwinRequestScopeContext</AssemblyName>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-
+    <LangVersion>latest</LangVersion>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Company>Dalion</Company>
+    <Description>With this Owin middleware, you can use OwinRequestScopeContext.Current like HttpContext.Current, but without a dependency to System.Web.</Description>
+    <Product>DavidLievrouw.OwinRequestScopeContext</Product>
+    <Title>DavidLievrouw.OwinRequestScopeContext</Title>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Owin" Version="1.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\GlobalAssemblyInfo.cs">
-      <Link>Properties\GlobalAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\InternalsVisibleTo.cs">
-      <Link>Properties\InternalsVisibleTo.cs</Link>
-    </Compile>    
-  </ItemGroup>
+  <Target Name="InitVersion" BeforeTargets="BeforeBuild">
+    <ReadLinesFromFile File="..\..\version.txt">
+      <Output TaskParameter="Lines" PropertyName="PackageVersion" />
+    </ReadLinesFromFile>
+    <PropertyGroup>
+      <ProductVersion Condition="'$(ProductVersion)'==''">$(PackageVersion).0</ProductVersion>
+      <Version>$(ProductVersion)</Version>
+      <InformationalVersion>$(ProductVersion)</InformationalVersion>
+    </PropertyGroup>
+    <Message Text="The package version is '$(PackageVersion)'." Importance="High" />
+  </Target>
 
 </Project>

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FakeItEasy;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -26,13 +25,13 @@ namespace DavidLievrouw.OwinRequestScopeContext {
       [Test]
       public void AllowsNullNext() {
         Action act = () => new OwinRequestScopeContextMiddleware(null, _options);
-        act.ShouldNotThrow();
+        act.Should().NotThrow();
       }
 
       [Test]
       public void AllowsNullOptions() {
         Action act = () => new OwinRequestScopeContextMiddleware(_next, null);
-        act.ShouldNotThrow();
+        act.Should().NotThrow();
       }
     }
 
@@ -78,38 +77,14 @@ namespace DavidLievrouw.OwinRequestScopeContext {
         }, _options);
         await sut.Invoke(_owinEnvironment).ConfigureAwait(false);
 
-        interceptedOwinEnvironmentInNext.ShouldBeEquivalentTo(_owinEnvironment);
+        interceptedOwinEnvironmentInNext.Should().BeEquivalentTo(_owinEnvironment);
       }
 
       [Test]
       public void WhenThereIsNoNext_DoesNotCrash() {
         var sut = new OwinRequestScopeContextMiddleware(null, _options);
         Func<Task> act = () => sut.Invoke(_owinEnvironment);
-        act.ShouldNotThrow();
-      }
-
-      [Test]
-      public async Task DisposesContextAtEnd() {
-        var disposable = A.Fake<IDisposable>();
-        _sut = new OwinRequestScopeContextMiddleware(owinEnvironment => {
-          OwinRequestScopeContext.Current.RegisterForDisposal(disposable);
-          return Task.CompletedTask;
-        }, _options);
-        await _sut.Invoke(_owinEnvironment).ConfigureAwait(false);
-        A.CallTo(() => disposable.Dispose()).MustHaveHappened();
-      }
-
-      [Test]
-      public void DisposesContextAtEnd_EvenWhenPipelineFailed() {
-        var disposable = A.Fake<IDisposable>();
-        var failureInPipeline = new InvalidOperationException("Failure for unit tests");
-        _sut = new OwinRequestScopeContextMiddleware(owinEnvironment => {
-          OwinRequestScopeContext.Current.RegisterForDisposal(disposable);
-          throw failureInPipeline;
-        }, _options);
-        Func<Task> act = () => _sut.Invoke(_owinEnvironment);
-        act.ShouldThrow<InvalidOperationException>().Where(_ => _.Equals(failureInPipeline));
-        A.CallTo(() => disposable.Dispose()).MustHaveHappened();
+        act.Should().NotThrow();
       }
 
       [Test]
@@ -117,7 +92,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
         _sut = new OwinRequestScopeContextMiddleware(
           async owinEnvironment => { await new OwinRequestScopeContextMiddleware(null, _options).Invoke(owinEnvironment).ConfigureAwait(false); }, _options);
         Func<Task> act = () => _sut.Invoke(_owinEnvironment);
-        act.ShouldThrow<InvalidOperationException>();
+        act.Should().Throw<InvalidOperationException>();
       }
 
       [Test]
