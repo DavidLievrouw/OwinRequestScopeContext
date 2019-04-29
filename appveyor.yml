@@ -10,18 +10,18 @@ build_script:
 
     dotnet restore ./src/OwinRequestScopeContext/OwinRequestScopeContext.csproj --verbosity m
 
-    dotnet publish ./src/OwinRequestScopeContext/OwinRequestScopeContext.csproj --framework netstandard2.0 --configuration Release /p:IsPublishing="true"
+    dotnet publish ./src/OwinRequestScopeContext/OwinRequestScopeContext.csproj --framework netstandard2.0 --configuration Release --output "bin/Publish/netstandard2.0" /p:IsPublishing="true"
 
-    dotnet publish ./src/OwinRequestScopeContext/OwinRequestScopeContext.csproj --framework net462 --configuration Release /p:IsPublishing="true"
+    dotnet publish ./src/OwinRequestScopeContext/OwinRequestScopeContext.csproj --framework net462 --configuration Release --output "bin/Publish/net462" /p:IsPublishing="true"
 test_script:
 - cmd: >-
     dotnet restore ./src/OwinRequestScopeContext.Tests/OwinRequestScopeContext.Tests.csproj --verbosity m
 
     dotnet test ./src/OwinRequestScopeContext.Tests/OwinRequestScopeContext.Tests.csproj --verbosity m
 artifacts:
-- path: ./src/OwinRequestScopeContext/bin/Release/netstandard2.0/publish
+- path: ./src/OwinRequestScopeContext/bin/Publish/etstandard2.0
   name: PublishNetstandard2_0
-- path: ./src/OwinRequestScopeContext/bin/Release/net462/publish
+- path: ./src/OwinRequestScopeContext/bin/Publish/net462
   name: PublishNet462
 - path: ./src/OwinRequestScopeContext/bin/Packages
   name: Packages
