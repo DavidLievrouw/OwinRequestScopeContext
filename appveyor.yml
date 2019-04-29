@@ -1,19 +1,28 @@
-version: 2.1.0.{build}
+version: 3.0.0.{build}
 image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
 nuget:
   disable_publish_on_pr: true
-build:
-  project: build/OwinRequestScopeContext.proj
-  verbosity: normal
-test:
-  assemblies:
-    only:
-    - build\test-output\*.Tests.dll
+build_script:
+- cmd: >-
+    dotnet --version
+
+    dotnet restore ./src/OwinRequestScopeContext/OwinRequestScopeContext.csproj --verbosity m
+
+    dotnet publish ./src/OwinRequestScopeContext/OwinRequestScopeContext.csproj --framework netstandard2.0 --configuration Release --output "bin/Publish/netstandard2.0" /p:IsPublishing="true"
+
+    dotnet publish ./src/OwinRequestScopeContext/OwinRequestScopeContext.csproj --framework net462 --configuration Release --output "bin/Publish/net462" /p:IsPublishing="true"
+test_script:
+- cmd: >-
+    dotnet restore ./src/OwinRequestScopeContext.Tests/OwinRequestScopeContext.Tests.csproj --verbosity m
+
+    dotnet test ./src/OwinRequestScopeContext.Tests/OwinRequestScopeContext.Tests.csproj --verbosity m --test-adapter-path:. --logger:Appveyor
 artifacts:
-- path: build\deploy-output
-  name: Deploy-output
-- path: build\log
-  name: Logs
+- path: ./src/OwinRequestScopeContext/bin/Publish/netstandard2.0
+  name: publish_netstandard2.0
+- path: ./src/OwinRequestScopeContext/bin/Publish/net462
+  name: publish_net462
+- path: ./src/OwinRequestScopeContext/bin/Packages
+  name: packages
 deploy: off

@@ -24,7 +24,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
       [Test]
       public void GivenNullKeyComparer_Throws() {
         Action act = () => new OwinRequestScopeContextItems(null);
-        act.ShouldThrow<ArgumentNullException>();
+        act.Should().Throw<ArgumentNullException>();
       }
 
       [Test]
@@ -41,7 +41,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
       [Test]
       public void WhenNoItemsAreRegisteredForDisposal_DoesNotThrow() {
         Action act = () => _sut.Dispose();
-        act.ShouldNotThrow();
+        act.Should().NotThrow();
       }
 
       [Test]
@@ -85,7 +85,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
         A.CallTo(() => secondDisposable.Dispose()).Throws(failureReason2);
 
         Action act = () => _sut.Dispose();
-        act.ShouldThrow<AggregateException>()
+        act.Should().Throw<AggregateException>()
           .Where(_ => _.InnerExceptions.SequenceEqual(new Exception[] {failureReason1, failureReason2}));
 
         A.CallTo(() => firstDisposable.Dispose()).MustHaveHappened();
@@ -109,7 +109,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
           new KeyValuePair<string, object>("A", 1),
           new KeyValuePair<string, object>("B", 2)
         };
-        actualItems.ShouldBeEquivalentTo(expectedItems);
+        actualItems.Should().BeEquivalentTo(expectedItems);
       }
     }
 
@@ -150,14 +150,14 @@ namespace DavidLievrouw.OwinRequestScopeContext {
       [Test]
       public void GivenNullArrayToCopyTo_ThrowsArgumentNullException() {
         Action act = () => _sut.CopyTo(null, 0);
-        act.ShouldThrow<ArgumentNullException>();
+        act.Should().Throw<ArgumentNullException>();
       }
 
       [Test]
       public void GivenIndexOutOfRange_ThrowsArgumentException() {
         var inputArray = new KeyValuePair<string, object>[2];
         Action act = () => _sut.CopyTo(inputArray, inputArray.Length);
-        act.ShouldThrow<ArgumentException>();
+        act.Should().Throw<ArgumentException>();
       }
 
       [Test]
@@ -169,7 +169,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
           new KeyValuePair<string, object>("A", 1),
           new KeyValuePair<string, object>("B", 2)
         };
-        inputArray.ShouldBeEquivalentTo(expectedArray);
+        inputArray.Should().BeEquivalentTo(expectedArray);
       }
     }
 
@@ -185,7 +185,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
           itemThatIsStillThere
         };
         var actualItems = (ICollection<KeyValuePair<string, object>>) _sut;
-        actualItems.ShouldBeEquivalentTo(expectedItems);
+        actualItems.Should().BeEquivalentTo(expectedItems);
       }
 
       [Test]
@@ -198,7 +198,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
           new KeyValuePair<string, object>("B", 2)
         };
         var actualItems = (ICollection<KeyValuePair<string, object>>) _sut;
-        actualItems.ShouldBeEquivalentTo(expectedItems);
+        actualItems.Should().BeEquivalentTo(expectedItems);
       }
 
       [Test]
@@ -206,16 +206,16 @@ namespace DavidLievrouw.OwinRequestScopeContext {
         var disposableValue = new MyDisposableObject();
 
         _sut.Add("D1", disposableValue, true);
-        _sut.Disposables.ShouldBeEquivalentTo(expectation: new[] {disposableValue});
+        _sut.Disposables.Should().BeEquivalentTo(expectation: new[] {disposableValue});
         var itemToRemove1 = _sut.Single(_ => _.Key == "D1");
         _sut.Remove(itemToRemove1);
         _sut.Disposables.Should().BeEmpty();
 
         _sut.Add("D1", disposableValue, false);
-        _sut.Disposables.ShouldBeEquivalentTo(Enumerable.Empty<IDisposable>());
+        _sut.Disposables.Should().BeEquivalentTo(Enumerable.Empty<IDisposable>());
         var itemToRemove2 = _sut.Single(_ => _.Key == "D1");
         _sut.Remove(itemToRemove2);
-        _sut.Disposables.ShouldBeEquivalentTo(Enumerable.Empty<IDisposable>());
+        _sut.Disposables.Should().BeEquivalentTo(Enumerable.Empty<IDisposable>());
       }
     }
 
@@ -262,7 +262,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
           itemThatIsStillThere
         };
         var actualItems = (ICollection<KeyValuePair<string, object>>) _sut;
-        actualItems.ShouldBeEquivalentTo(expectedItems);
+        actualItems.Should().BeEquivalentTo(expectedItems);
       }
 
       [Test]
@@ -275,7 +275,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
           new KeyValuePair<string, object>("B", 2)
         };
         var actualItems = (ICollection<KeyValuePair<string, object>>) _sut;
-        actualItems.ShouldBeEquivalentTo(expectedItems);
+        actualItems.Should().BeEquivalentTo(expectedItems);
       }
 
       [Test]
@@ -283,14 +283,14 @@ namespace DavidLievrouw.OwinRequestScopeContext {
         var disposableValue = new MyDisposableObject();
 
         _sut.Add("D1", disposableValue, true);
-        _sut.Disposables.ShouldBeEquivalentTo(expectation: new[] {disposableValue});
+        _sut.Disposables.Should().BeEquivalentTo(expectation: new[] {disposableValue});
         _sut.Remove("D1");
         _sut.Disposables.Should().BeEmpty();
 
         _sut.Add("D1", disposableValue, false);
-        _sut.Disposables.ShouldBeEquivalentTo(Enumerable.Empty<IDisposable>());
+        _sut.Disposables.Should().BeEquivalentTo(Enumerable.Empty<IDisposable>());
         _sut.Remove("D1");
-        _sut.Disposables.ShouldBeEquivalentTo(Enumerable.Empty<IDisposable>());
+        _sut.Disposables.Should().BeEquivalentTo(Enumerable.Empty<IDisposable>());
       }
     }
 
@@ -323,7 +323,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
       [Test]
       public void WhenDictionaryContainsItems_ReturnsKeysFromThoseItems() {
         var expected = new[] {"A", "B"};
-        _sut.Keys.ShouldBeEquivalentTo(expected);
+        _sut.Keys.Should().BeEquivalentTo(expected);
       }
     }
 
@@ -338,7 +338,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
       [Test]
       public void WhenDictionaryContainsItems_ReturnsValuesFromThoseItems() {
         var expected = new[] {1, 2};
-        _sut.Values.ShouldBeEquivalentTo(expected);
+        _sut.Values.Should().BeEquivalentTo(expected);
       }
     }
 
@@ -356,7 +356,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
           new KeyValuePair<string, object>("A", 1),
           new KeyValuePair<string, object>("B", 2)
         };
-        actualItems.ShouldBeEquivalentTo(expectedItems);
+        actualItems.Should().BeEquivalentTo(expectedItems);
       }
     }
 
@@ -376,7 +376,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
           Action act = () => {
             var dummy = _sut[itemToFind];
           };
-          act.ShouldThrow<KeyNotFoundException>();
+          act.Should().Throw<KeyNotFoundException>();
         }
       }
 
@@ -402,7 +402,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             new KeyValuePair<string, object>(key, theNewValue)
           };
           var actualItems = (ICollection<KeyValuePair<string, object>>) _sut;
-          actualItems.ShouldBeEquivalentTo(expectedItems);
+          actualItems.Should().BeEquivalentTo(expectedItems);
         }
       }
     }
@@ -421,13 +421,13 @@ namespace DavidLievrouw.OwinRequestScopeContext {
           new KeyValuePair<string, object>(newKey, newValue)
         };
         var actualItems = (ICollection<KeyValuePair<string, object>>) _sut;
-        actualItems.ShouldBeEquivalentTo(expectedItems);
+        actualItems.Should().BeEquivalentTo(expectedItems);
       }
 
       [Test]
       public void GivenExistingKey_ThrowsArgumentException() {
         Action action = () => _sut.Add(key: _sut.Keys.ElementAt(0), value: _sut.Values.ElementAt(0));
-        action.ShouldThrow<ArgumentException>();
+        action.Should().Throw<ArgumentException>();
       }
     }
 
@@ -445,14 +445,14 @@ namespace DavidLievrouw.OwinRequestScopeContext {
           newItem
         };
         var actualItems = (ICollection<KeyValuePair<string, object>>) _sut;
-        actualItems.ShouldBeEquivalentTo(expectedItems);
+        actualItems.Should().BeEquivalentTo(expectedItems);
       }
 
       [Test]
       public void GivenExistingKey_ThrowsArgumentException() {
         var existingElement = _sut.ElementAt(0);
         Action action = () => _sut.Add(existingElement);
-        action.ShouldThrow<ArgumentException>();
+        action.Should().Throw<ArgumentException>();
       }
     }
 
@@ -470,7 +470,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
           new KeyValuePair<string, object>(newKey, newValue)
         };
         var actualItems = (ICollection<KeyValuePair<string, object>>) _sut;
-        actualItems.ShouldBeEquivalentTo(expectedItems);
+        actualItems.Should().BeEquivalentTo(expectedItems);
       }
 
       [Test]
@@ -478,7 +478,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
         var existingKey = _sut.Keys.ElementAt(0);
         var newValue = new MyDisposableObject();
         Action action = () => _sut.Add(existingKey, newValue);
-        action.ShouldThrow<ArgumentException>();
+        action.Should().Throw<ArgumentException>();
       }
     }
 
@@ -496,7 +496,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
           new KeyValuePair<string, object>(newKey, newValue)
         };
         var actualItems = (ICollection<KeyValuePair<string, object>>) _sut;
-        actualItems.ShouldBeEquivalentTo(expectedItems);
+        actualItems.Should().BeEquivalentTo(expectedItems);
       }
 
       [Test]
@@ -504,7 +504,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
         var existingKey = _sut.Keys.ElementAt(0);
         var newValue = new MyDisposableObject();
         Action action = () => _sut.Add(existingKey, newValue, true);
-        action.ShouldThrow<ArgumentException>();
+        action.Should().Throw<ArgumentException>();
       }
     }
 

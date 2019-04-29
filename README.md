@@ -81,6 +81,10 @@ In the GitHub repository, there is a [sample project](https://github.com/DavidLi
 
 ## Change log
 
+v3.0.0 - 2019-04-29
+- Also target netstandard2.0.
+- Update README.
+
 v2.1.0 - 2017-08-24
 - Add a more explicit way of adding items to the request scope that need to be disposed.
 - Mark the old way of registering for disposal as obsolete.

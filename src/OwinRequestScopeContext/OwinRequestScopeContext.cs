@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Runtime.Remoting.Messaging;
 
-namespace DavidLievrouw.OwinRequestScopeContext {
-  public class OwinRequestScopeContext : IOwinRequestScopeContext {
+namespace DavidLievrouw.OwinRequestScopeContext
+{
+    public class OwinRequestScopeContext : IOwinRequestScopeContext {
     const string CallContextKey = "dl.owin.rscopectx";
 
     internal OwinRequestScopeContext(
@@ -21,8 +21,8 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
 
     public static IOwinRequestScopeContext Current {
-      get => (IOwinRequestScopeContext) CallContext.LogicalGetData(CallContextKey);
-      internal set => CallContext.LogicalSetData(CallContextKey, value);
+      get => (IOwinRequestScopeContext) CallContext.GetData(CallContextKey);
+      internal set => CallContext.SetData(CallContextKey, value);
     }
 
     internal OwinRequestScopeContextOptions Options { get; }

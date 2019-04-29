@@ -23,19 +23,19 @@ namespace DavidLievrouw.OwinRequestScopeContext {
       [Test]
       public void GivenNullOptions_ThrowsArgumentNullException() {
         Action act = () => new OwinRequestScopeContext(_owinEnvironment, _items, null);
-        act.ShouldThrow<ArgumentNullException>();
+        act.Should().Throw<ArgumentNullException>();
       }
 
       [Test]
       public void GivenNullOwinEnvironment_DoesNotThrow() {
         Action act = () => new OwinRequestScopeContext(null, _items, OwinRequestScopeContextOptions.Default);
-        act.ShouldThrow<ArgumentNullException>();
+        act.Should().Throw<ArgumentNullException>();
       }
 
       [Test]
       public void GivenNullItems_ThrowsArgumentNullException() {
         Action act = () => new OwinRequestScopeContext(_owinEnvironment, null, OwinRequestScopeContextOptions.Default);
-        act.ShouldThrow<ArgumentNullException>();
+        act.Should().Throw<ArgumentNullException>();
       }
     }
 
@@ -43,7 +43,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     public class OwinContext : OwinRequestScopeContextFixture {
       [Test]
       public void ReturnsOwinContextFromConstructor() {
-        _sut.OwinEnvironment.ShouldBeEquivalentTo(_owinEnvironment);
+        _sut.OwinEnvironment.Should().BeEquivalentTo(_owinEnvironment);
       }
     }
 
@@ -57,7 +57,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
       [Test]
       public void IntializesExpectedProperties() {
         _sut.Items.Should().NotBeNull();
-        _sut.OwinEnvironment.ShouldBeEquivalentTo(_owinEnvironment);
+        _sut.OwinEnvironment.Should().BeEquivalentTo(_owinEnvironment);
       }
     }
 
@@ -68,7 +68,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
         Action act = () => {
           var dummy = _sut[null];
         };
-        act.ShouldThrow<ArgumentNullException>();
+        act.Should().Throw<ArgumentNullException>();
       }
 
       [Test]
@@ -112,7 +112,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
       [Test]
       public void GivenNullDisposable_ThrowsArgumentNullException() {
         Action act = () => _sut.RegisterForDisposal(null);
-        act.ShouldThrow<ArgumentNullException>();
+        act.Should().Throw<ArgumentNullException>();
       }
 
       [Test]
@@ -127,7 +127,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
         _sut.RegisterForDisposal(_disposable);
         _sut.RegisterForDisposal(_disposable);
         A.CallTo(() => ((IInternalOwinRequestScopeContextItems) _sut.Items).Disposables.Add(_disposable))
-          .MustHaveHappened(repeatConstraint: Repeated.Exactly.Times(2));
+          .MustHaveHappened(2, Times.Exactly);
       }
     }
 

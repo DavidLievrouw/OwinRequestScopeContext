@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:ns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>DavidLievrouw.OwinRequestScopeContext.Sources</id>
+    <version>$version$</version>
+    <authors>Dalion</authors>
+    <owners>David Lievrouw</owners>
+    <copyright>Created by David Lievrouw, License: MIT</copyright>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/DavidLievrouw/OwinRequestScopeContext/blob/master/LICENSE</licenseUrl>
+    <title>DavidLievrouw.OwinRequestScopeContext.Sources</title>
+    <projectUrl>https://github.com/DavidLievrouw/OwinRequestScopeContext</projectUrl>
+    <summary>With this Owin middleware, you can use OwinRequestScopeContext.Current like HttpContext.Current, but without a dependency to System.Web.</summary>
+    <description>With this Owin middleware, you can use OwinRequestScopeContext.Current like HttpContext.Current, but without a dependency to System.Web.</description>
+    <dependencies>
+      <dependency id="Owin" version="1.0" />
+    </dependencies>
+    <contentFiles>
+      <files include="cs/**/*.*" buildAction="Compile" />
+    </contentFiles>
+  </metadata>
+  <files>
+    <file src="**\*.cs" exclude="obj\**;bin\**" target="content\App_Packages\DavidLievrouw.OwinRequestScopeContext.Sources.$version$" />
+  </files>
+</package>
