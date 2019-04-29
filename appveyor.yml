@@ -20,9 +20,9 @@ test_script:
     dotnet test ./src/OwinRequestScopeContext.Tests/OwinRequestScopeContext.Tests.csproj --verbosity m --test-adapter-path:. --logger:Appveyor
 artifacts:
 - path: ./src/OwinRequestScopeContext/bin/Publish/netstandard2.0
-  name: PublishNetstandard2_0
+  name: publish_netstandard2.0
 - path: ./src/OwinRequestScopeContext/bin/Publish/net462
-  name: PublishNet462
+  name: publish_net462
 - path: ./src/OwinRequestScopeContext/bin/Packages
-  name: Packages
+  name: packages
 deploy: off
