@@ -1,19 +1,26 @@
-version: 2.1.0.{build}
+version: 3.0.0.{build}
 image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
-nuget:
-  disable_publish_on_pr: true
+init:
+  - cmd: git config --global core.autocrlf true
+before_build:
+  - cmd: dotnet --version
+  - cmd: dotnet restore ./src/OwinRequestScope/OwinRequestScope.csproj --verbosity m
+  - cmd: dotnet restore ./src/OwinRequestScope.Tests/OwinRequestScope.Tests.csproj --verbosity m
 build:
-  project: build/OwinRequestScopeContext.proj
-  verbosity: normal
+  - cmd: dotnet publish ./src/OwinRequestScope/OwinRequestScope.csproj --framework netstandard2.0 --configuration Release /p:IsPublishing="true"
+  - cmd: dotnet publish ./src/OwinRequestScope/OwinRequestScope.csproj --framework net462 --configuration Release /p:IsPublishing="true"
+  - cmd: dotnet build ./src/OwinRequestScope.Tests/OwinRequestScope.Tests.csproj --configuration Debug
 test:
   assemblies:
     only:
-    - build\test-output\*.Tests.dll
+    - ./src/OwinRequestScope.Tests/bin/Debug/*.Tests.dll
 artifacts:
-- path: build\deploy-output
-  name: Deploy-output
-- path: build\log
-  name: Logs
+- path: ./src/OwinRequestScope/bin/Release/netstandard2.0/publish
+  name: PublishNetstandard2_0
+- path: ./src/OwinRequestScope/bin/Release/net462/publish
+  name: PublishNet462
+- path: /src/OwinRequestScope/bin/Packages
+  name: Packages
 deploy: off
