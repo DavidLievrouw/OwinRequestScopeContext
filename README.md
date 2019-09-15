@@ -8,7 +8,9 @@ More info in this article: http://odetocode.com/Articles/112.aspx
 ## Status
 
 Binary package: [![NuGet Status](http://img.shields.io/nuget/v/DavidLievrouw.OwinRequestScopeContext.svg?style=flat-square)](https://www.nuget.org/packages/DavidLievrouw.OwinRequestScopeContext/)
+
 Source-only package: [![NuGet Status](http://img.shields.io/nuget/v/DavidLievrouw.OwinRequestScopeContext.Sources.svg?style=flat-square)](https://www.nuget.org/packages/DavidLievrouw.OwinRequestScopeContext.Sources/)
+
 CI: [![Build status](https://ci.appveyor.com/api/projects/status/ty6o1cw7tm4drqfj?svg=true)](https://ci.appveyor.com/project/DavidLievrouw/owinrequestscopecontext-kbcye)
 
 ## Usage for .NET framework
