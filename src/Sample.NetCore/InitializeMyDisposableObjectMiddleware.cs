@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using DavidLievrouw.OwinRequestScopeContext;
 
 namespace Sample {
     public class InitializeMyDisposableObjectMiddleware {
-        public Task Invoke() {
+        public Task Invoke(IDictionary<string, object> environment) {
             var requestScopeContext = OwinRequestScopeContext.Current;
 
             // Add item to the request scope context, that will be disposed when the requests completes

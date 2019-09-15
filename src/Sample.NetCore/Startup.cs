@@ -13,15 +13,11 @@ namespace Sample {
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
             app
-                .Use(async (context, next) => {
-                    await new ValidateThatThereIsNoCurrentRequestContextBeforeRequestMiddleware().Invoke();
-                    await next.Invoke();
-                })
-                .UseRequestScopeContext()
-                .Use(async (context, next) => {
-                    await new InitializeMyDisposableObjectMiddleware().Invoke();
-                    await next.Invoke();
-                })
+                .UseOwin(pipeline => pipeline
+                    .Use(new ValidateThatThereIsNoCurrentRequestContextBeforeRequestMiddleware().Invoke)
+                    .UseRequestScopeContext()
+                    .Use(new InitializeMyDisposableObjectMiddleware().Invoke)
+                )
                 .Run(async context => {
                     // Read data that was set during the request
                     var myDisposableObject_ToBeDisposed = OwinRequestScopeContext.Current.Items["MyDisposableObject_ToBeDisposed"] as MyDisposableObject;

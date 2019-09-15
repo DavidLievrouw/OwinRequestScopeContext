@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using DavidLievrouw.OwinRequestScopeContext;
 
 namespace Sample {
     public class ValidateThatThereIsNoCurrentRequestContextBeforeRequestMiddleware {
-        public Task Invoke() {
+        public Task Invoke(IDictionary<string, object> environment) {
             // This middleware is triggered before the OwinRequestScopeContext middleware
             // There should be no instance present
             var requestScopeContext = OwinRequestScopeContext.Current;
