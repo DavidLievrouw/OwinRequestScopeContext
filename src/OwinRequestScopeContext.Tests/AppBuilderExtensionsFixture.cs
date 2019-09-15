@@ -18,7 +18,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             }
 
             [Test]
-            public void UseExpectedMiddlewareWithSpecifiedOptions() {
+            public void UsesExpectedMiddlewareWithSpecifiedOptions() {
                 var options = new OwinRequestScopeContextOptions {
                     ItemKeyEqualityComparer = StringComparer.Ordinal
                 };
@@ -28,7 +28,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
 
             [Test]
             [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
-            public void GivenNullOptions_UseDefaultOptions() {
+            public void GivenNullOptions_UsesDefaultOptions() {
                 OwinRequestScopeContextOptions nullOptions = null;
                 _app.UseRequestScopeContext(nullOptions);
                 A.CallTo(() => _app.Use(typeof(OwinRequestScopeContextMiddleware), OwinRequestScopeContextOptions.Default))
@@ -36,7 +36,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             }
 
             [Test]
-            public void GivenNoOptions_UseExpectedMiddlewareWithDefaultOptions() {
+            public void GivenNoOptions_UsesDefaultOptions() {
                 _app.UseRequestScopeContext();
                 A.CallTo(() => _app.Use(typeof(OwinRequestScopeContextMiddleware), OwinRequestScopeContextOptions.Default))
                     .MustHaveHappened();
