@@ -12,9 +12,7 @@
     <projectUrl>https://github.com/DavidLievrouw/OwinRequestScopeContext</projectUrl>
     <summary>With this Owin middleware, you can use OwinRequestScopeContext.Current like HttpContext.Current, but without a dependency to System.Web.</summary>
     <description>With this Owin middleware, you can use OwinRequestScopeContext.Current like HttpContext.Current, but without a dependency to System.Web.</description>
-    <dependencies>
-      <dependency id="Owin" version="1.0" />
-    </dependencies>
+    <dependencies />
     <contentFiles>
       <files include="cs/**/*.*" buildAction="Compile" />
     </contentFiles>

@@ -1,4 +1,5 @@
-﻿using Owin;
+﻿#if NETFRAMEWORK
+using Owin;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
   public static class AppBuilderExtensions {
@@ -7,3 +8,4 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
   }
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NETFRAMEWORK
+using System;
 using FakeItEasy;
 using NUnit.Framework;
 using Owin;
@@ -40,3 +41,4 @@ namespace DavidLievrouw.OwinRequestScopeContext {
     }
   }
 }
+#endif

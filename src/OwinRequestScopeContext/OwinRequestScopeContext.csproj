@@ -12,8 +12,19 @@
     <Title>DavidLievrouw.OwinRequestScopeContext</Title>
   </PropertyGroup>
 
-  <ItemGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net461'">
+    <DefineConstants>NETFULL;NETFRAMEWORK;NET461</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <DefineConstants>NETCORE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
     <PackageReference Include="Owin" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <PackageReference Include="Microsoft.AspNetCore.Owin" Version="2.2.0" />
   </ItemGroup>
 
   <Target Name="InitVersion" BeforeTargets="BeforeBuild">

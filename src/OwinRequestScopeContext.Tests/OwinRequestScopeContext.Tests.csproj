@@ -1,14 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFrameworks>net461;netcoreapp2.2</TargetFrameworks>
     <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
     <AssemblyName>DavidLievrouw.OwinRequestScopeContext.Tests</AssemblyName>
     <RootNamespace>DavidLievrouw.OwinRequestScopeContext</RootNamespace>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'=='net461'">
+    <DefineConstants>NETFULL;NETFRAMEWORK;NET461</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp2.2'">
+    <DefineConstants>NETCORE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +24,14 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
     <PackageReference Include="NUnit" Version="3.11.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
-	<PackageReference Include="Owin" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
+    <PackageReference Include="Owin" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp2.2'">
+    <PackageReference Include="Microsoft.AspNetCore.Owin" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
