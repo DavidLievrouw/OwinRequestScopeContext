@@ -1,4 +1,4 @@
-version: 3.0.0.{build}
+version: 4.0.0.{build}
 image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
@@ -12,7 +12,7 @@ build_script:
 
     dotnet publish ./src/OwinRequestScopeContext/OwinRequestScopeContext.csproj --framework netstandard2.0 --configuration Release --output "bin/Publish/netstandard2.0" /p:IsPublishing="true"
 
-    dotnet publish ./src/OwinRequestScopeContext/OwinRequestScopeContext.csproj --framework net462 --configuration Release --output "bin/Publish/net462" /p:IsPublishing="true"
+    dotnet publish ./src/OwinRequestScopeContext/OwinRequestScopeContext.csproj --framework net461 --configuration Release --output "bin/Publish/net461" /p:IsPublishing="true"
 test_script:
 - cmd: >-
     dotnet restore ./src/OwinRequestScopeContext.Tests/OwinRequestScopeContext.Tests.csproj --verbosity m
@@ -21,8 +21,8 @@ test_script:
 artifacts:
 - path: ./src/OwinRequestScopeContext/bin/Publish/netstandard2.0
   name: publish_netstandard2.0
-- path: ./src/OwinRequestScopeContext/bin/Publish/net462
-  name: publish_net462
+- path: ./src/OwinRequestScopeContext/bin/Publish/net461
+  name: publish_net461
 - path: ./src/OwinRequestScopeContext/bin/Packages
   name: packages
 deploy: off

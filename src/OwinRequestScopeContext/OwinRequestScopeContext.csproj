@@ -28,7 +28,7 @@
     <Message Text="The package version is '$(PackageVersion)'." Importance="High" />
   </Target>
 
-  <Target Name="PackNuGetPackages" AfterTargets="Publish" Condition="'$(IsPublishing)'=='True' And '$(TargetFramework)'=='net462'">
+  <Target Name="PackNuGetPackages" AfterTargets="Publish" Condition="'$(IsPublishing)'=='True' And '$(TargetFramework)'=='net461'">
     <PropertyGroup>
       <PackagePublishDir Condition="'$(PackagePublishDir)'==''">$(MSBuildThisFileDirectory)bin\Packages\</PackagePublishDir>
     </PropertyGroup>
