@@ -1,5 +1,6 @@
 ﻿#if NETFRAMEWORK
 using System;
+using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using Owin;
 using FakeItEasy;
@@ -26,8 +27,10 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             }
 
             [Test]
-            public void GivenNullOptions_UseExpectedMiddlewareWithDefaultOptions() {
-                _app.UseRequestScopeContext();
+            [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
+            public void GivenNullOptions_UseDefaultOptions() {
+                OwinRequestScopeContextOptions nullOptions = null;
+                _app.UseRequestScopeContext(nullOptions);
                 A.CallTo(() => _app.Use(typeof(OwinRequestScopeContextMiddleware), OwinRequestScopeContextOptions.Default))
                     .MustHaveHappened();
             }
