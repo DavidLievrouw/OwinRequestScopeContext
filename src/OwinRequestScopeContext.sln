@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{672EFF80-2A12-4BE6-A665-0F71C136EEF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.NetFramework", "Sample\Sample.NetFramework.csproj", "{46361DC1-C587-4D96-95E3-669B3E228AB8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.NetFramework", "Sample.NetFramework\Sample.NetFramework.csproj", "{46361DC1-C587-4D96-95E3-669B3E228AB8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OwinRequestScopeContext", "OwinRequestScopeContext\OwinRequestScopeContext.csproj", "{8D3859AC-EBCF-4346-B437-C099B4D2B03F}"
 EndProject
