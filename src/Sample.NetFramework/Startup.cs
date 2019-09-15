@@ -4,23 +4,23 @@ using Microsoft.Owin;
 using Owin;
 using Sample;
 
-[assembly: OwinStartup(startupType: typeof(Startup))]
+[assembly: OwinStartup(typeof(Startup))]
 
 namespace Sample {
-  public class Startup {
-    public static void Configuration(IAppBuilder app) {
-      var httpConfiguration = CreateHttpConfiguration();
-      app
-        .Use(typeof(ValidateThatThereIsNoCurrentRequestContextBeforeRequestMiddleware))
-        .UseRequestScopeContext()
-        .Use(typeof(InitializeMyDisposableObjectMiddleware))
-        .UseWebApi(httpConfiguration);
+    public class Startup {
+        public static void Configuration(IAppBuilder app) {
+            var httpConfiguration = CreateHttpConfiguration();
+            app
+                .Use(typeof(ValidateThatThereIsNoCurrentRequestContextBeforeRequestMiddleware))
+                .UseRequestScopeContext()
+                .Use(typeof(InitializeMyDisposableObjectMiddleware))
+                .UseWebApi(httpConfiguration);
+        }
+
+        public static HttpConfiguration CreateHttpConfiguration() {
+            var httpConfiguration = new HttpConfiguration();
+            httpConfiguration.MapHttpAttributeRoutes();
+            return httpConfiguration;
+        }
     }
-    
-    public static HttpConfiguration CreateHttpConfiguration() {
-      var httpConfiguration = new HttpConfiguration();
-      httpConfiguration.MapHttpAttributeRoutes();
-      return httpConfiguration;
-    }
-  }
 }
