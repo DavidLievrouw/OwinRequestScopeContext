@@ -106,33 +106,3 @@ Remark: When any .Dispose() call fails, the other registered instances are still
 
 In the GitHub repository, there is a [.NET framework sample project](https://github.com/DavidLievrouw/OwinRequestScopeContext/tree/master/src/Sample.NetFramework), and also a  [.NET core sample project](https://github.com/DavidLievrouw/OwinRequestScopeContext/tree/master/src/Sample.NetCore).
 
-## Change log
-
-v4.0.0 - 2019-09-16
-- Target .NET 4.6.1 instead of .NET 4.6.2. No features were used that were specific to .NET 4.6.2.
-- When targeting netstandard2.0, we should not depend on the [Owin package](https://www.nuget.org/packages/Owin/), because that package does not target netstandard. Depending on package [Microsoft.AspNetCore.Owin](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/owin?view=aspnetcore-2.2) as of this major version, when you target core app or netstandard2.0.
-- Also run the unit tests against all supported target frameworks.
-- Added a sample application that targets netcoreapp2.2.
-- Update README.
-
-v3.0.0 - 2019-04-29
-- Also target netstandard2.0.
-- Update README.
-
-v2.1.0 - 2017-08-24
-- Add a more explicit way of adding items to the request scope that need to be disposed.
-- Mark the old way of registering for disposal as obsolete.
-- Add indexer to OwinRequestScopeContext.
-- Update sample and README.
-
-v2.0.0 - 2017-08-13
-- Make OwinRequestScopeContext.Current setter internal.
-- Changes to v1.1.0 are actually breaking changes, so major version bump needed.
-
-v1.1.0 - 2017-08-13
-- Remove dependency to Microsoft.Owin package.
-- OwinContext is no longer a member of IOwinRequestScopeContext. It is replaced by OwinEnvironment.
-- OwinRequestScopeContext.Current is no longer internal.
-
-v1.0.0 - 2017-08-12
-- Initial release (binary and sources).
