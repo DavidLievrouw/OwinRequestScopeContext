@@ -2,47 +2,47 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
-    [TestFixture]
     public class ExtensionsFixture {
-        [TestFixture]
         public class ForEach : ExtensionsFixture {
-            [SetUp]
-            public void SetUp() {
+            public ForEach() {
                 SourceItem.ResetPerformedActionCount();
             }
 
-            [Test]
-            public void GivenSourceIsNull_DoesNotThrow_DoesNotPerformAction() {
-                IEnumerable<SourceItem> source = null;
-                // ReSharper disable once ExpressionIsAlwaysNull
-                Assert.DoesNotThrow(() => source.ForEach(item => item.DoSomeAction()));
-                SourceItem.PerformedActionCount.Should().Be(0);
-            }
-
-            [Test]
+            [Fact]
             public void GivenActionIsNull_DoesNotThrow_DoesNotPerformAction() {
                 var source = new[] {new SourceItem(), new SourceItem()};
-                Assert.DoesNotThrow(() => source.ForEach((Action<SourceItem>) null));
+                Action act = () => source.ForEach((Action<SourceItem>) null);
+                act.Should().NotThrow();
                 SourceItem.PerformedActionCount.Should().Be(0);
                 foreach (var sourceItem in source) {
-                    Assert.That(sourceItem.ActionPerformed, Is.False);
+                    sourceItem.ActionPerformed.Should().BeFalse();
                 }
             }
 
-            [Test]
+            [Fact]
             public void GivenSourceIsEmpty_DoesNotThrow_DoesNotPerformAction() {
                 var source = Enumerable.Empty<SourceItem>();
-                Assert.DoesNotThrow(() => source.ForEach(item => item.DoSomeAction()));
+                Action act = () => source.ForEach(item => item.DoSomeAction());
+                act.Should().NotThrow();
                 SourceItem.PerformedActionCount.Should().Be(0);
             }
 
-            [Test]
+            [Fact]
+            public void GivenSourceIsNull_DoesNotThrow_DoesNotPerformAction() {
+                IEnumerable<SourceItem> source = null;
+                Action act = () => source.ForEach(item => item.DoSomeAction());
+                act.Should().NotThrow();
+                SourceItem.PerformedActionCount.Should().Be(0);
+            }
+
+            [Fact]
             public void GivenSourceWithElements_PerformsActionForAllElements() {
                 var source = new[] {new SourceItem(), new SourceItem()};
-                Assert.DoesNotThrow(() => source.ForEach(item => item.DoSomeAction()));
+                Action act = () => source.ForEach(item => item.DoSomeAction());
+                act.Should().NotThrow();
                 SourceItem.PerformedActionCount.Should().Be(source.Length);
                 foreach (var sourceItem in source) {
                     sourceItem.ActionPerformed.Should().BeTrue();
@@ -65,42 +65,43 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             }
         }
 
-        [TestFixture]
         public class ForEachWithIndex : ExtensionsFixture {
-            [SetUp]
-            public void SetUp() {
+            public ForEachWithIndex() {
                 SourceItem.ResetPerformedActions();
             }
 
-            [Test]
-            public void GivenSourceIsNull_DoesNotThrow_DoesNotPerformAction() {
-                IEnumerable<SourceItem> source = null;
-                // ReSharper disable once ExpressionIsAlwaysNull
-                Assert.DoesNotThrow(() => source.ForEach((item, idx) => item.DoSomeAction(idx)));
-                Assert.That(SourceItem.PerformedActions, Is.Empty);
-            }
-
-            [Test]
+            [Fact]
             public void GivenActionIsNull_DoesNotThrow_DoesNotPerformAction() {
                 var source = new[] {new SourceItem(), new SourceItem()};
-                Assert.DoesNotThrow(() => source.ForEach((Action<SourceItem, int>) null));
-                Assert.That(SourceItem.PerformedActions, Is.Empty);
+                Action act = () => source.ForEach((Action<SourceItem, int>) null);
+                act.Should().NotThrow();
+                SourceItem.PerformedActions.Should().BeEmpty();
                 foreach (var sourceItem in source) {
                     sourceItem.ActionIndex.Should().Be(-1);
                 }
             }
 
-            [Test]
+            [Fact]
             public void GivenSourceIsEmpty_DoesNotThrow_DoesNotPerformAction() {
                 var source = Enumerable.Empty<SourceItem>();
-                Assert.DoesNotThrow(() => source.ForEach((item, idx) => item.DoSomeAction(idx)));
-                Assert.That(SourceItem.PerformedActions, Is.Empty);
+                Action act = () => source.ForEach((item, idx) => item.DoSomeAction(idx));
+                act.Should().NotThrow();
+                SourceItem.PerformedActions.Should().BeEmpty();
             }
 
-            [Test]
+            [Fact]
+            public void GivenSourceIsNull_DoesNotThrow_DoesNotPerformAction() {
+                IEnumerable<SourceItem> source = null;
+                Action act = () => source.ForEach((item, idx) => item.DoSomeAction(idx));
+                act.Should().NotThrow();
+                SourceItem.PerformedActions.Should().BeEmpty();
+            }
+
+            [Fact]
             public void GivenSourceWithElements_PerformsActionForAllElements_WithCorrectIndex() {
                 var source = new[] {new SourceItem(), new SourceItem()};
-                Assert.DoesNotThrow(() => source.ForEach((item, idx) => item.DoSomeAction(idx)));
+                Action act = () => source.ForEach((item, idx) => item.DoSomeAction(idx));
+                act.Should().NotThrow();
                 SourceItem.PerformedActions.Count.Should().Be(source.Length);
                 foreach (var sourceItem in source) {
                     sourceItem.ActionIndex.Should().Be(Array.IndexOf(source, sourceItem));

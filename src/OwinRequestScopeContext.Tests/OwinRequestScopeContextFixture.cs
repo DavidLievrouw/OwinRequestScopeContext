@@ -2,68 +2,62 @@
 using System.Collections.Generic;
 using FakeItEasy;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
-    [TestFixture]
     public class OwinRequestScopeContextFixture {
-        IDictionary<string, object> _owinEnvironment;
-        OwinRequestScopeContext _sut;
-        IOwinRequestScopeContextItems _items;
+        readonly IOwinRequestScopeContextItems _items;
+        readonly IDictionary<string, object> _owinEnvironment;
+        readonly OwinRequestScopeContext _sut;
 
-        [SetUp]
-        public virtual void SetUp() {
+        public OwinRequestScopeContextFixture() {
             _owinEnvironment = new Dictionary<string, object> {{"the meaning of life, the universe, and everything", 42}};
             _items = A.Fake<IInternalOwinRequestScopeContextItems>();
             _sut = new OwinRequestScopeContext(_owinEnvironment, _items, OwinRequestScopeContextOptions.Default);
         }
 
-        [TestFixture]
         public class Construction : OwinRequestScopeContextFixture {
-            [Test]
+            [Fact]
             public void GivenNullOptions_ThrowsArgumentNullException() {
                 Action act = () => new OwinRequestScopeContext(_owinEnvironment, _items, null);
                 act.Should().Throw<ArgumentNullException>();
             }
 
-            [Test]
+            [Fact]
             public void GivenNullOwinEnvironment_DoesNotThrow() {
                 Action act = () => new OwinRequestScopeContext(null, _items, OwinRequestScopeContextOptions.Default);
                 act.Should().Throw<ArgumentNullException>();
             }
 
-            [Test]
+            [Fact]
             public void GivenNullItems_ThrowsArgumentNullException() {
                 Action act = () => new OwinRequestScopeContext(_owinEnvironment, null, OwinRequestScopeContextOptions.Default);
                 act.Should().Throw<ArgumentNullException>();
             }
         }
 
-        [TestFixture]
         public class OwinContext : OwinRequestScopeContextFixture {
-            [Test]
+            [Fact]
             public void ReturnsOwinContextFromConstructor() {
                 _sut.OwinEnvironment.Should().BeEquivalentTo(_owinEnvironment);
             }
         }
 
-        [TestFixture]
         public class Items : OwinRequestScopeContextFixture {
-            [Test]
+            [Fact]
             public void DictionaryIsAvailableAfterConstruction() {
                 _sut.Items.Should().NotBeNull();
             }
 
-            [Test]
+            [Fact]
             public void IntializesExpectedProperties() {
                 _sut.Items.Should().NotBeNull();
                 _sut.OwinEnvironment.Should().BeEquivalentTo(_owinEnvironment);
             }
         }
 
-        [TestFixture]
         public class Indexer : OwinRequestScopeContextFixture {
-            [Test]
+            [Fact]
             public void GivenNullKey_ThrowsArgumentNullException() {
                 Action act = () => {
                     var dummy = _sut[null];
@@ -71,7 +65,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 act.Should().Throw<ArgumentNullException>();
             }
 
-            [Test]
+            [Fact]
             public void GivenKeyThatDoesNotExist_ReturnsNull() {
                 var invalidKey = "TheInvalidKey";
                 object valueInDictionary = null;
@@ -81,7 +75,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 actual.Should().BeNull();
             }
 
-            [Test]
+            [Fact]
             public void GivenKeyThatDoesExist_ReturnsCorrespondingValue() {
                 var validKey = "ExistingKey";
                 var expected = new object();
@@ -94,35 +88,32 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             }
         }
 
-        [TestFixture]
         public class RegisterForDisposal : OwinRequestScopeContextFixture {
-            IDisposable _disposable;
+            readonly IDisposable _disposable;
 
-            [SetUp]
-            public override void SetUp() {
-                base.SetUp();
+            public RegisterForDisposal() {
                 _disposable = A.Fake<IDisposable>();
             }
 
-            [Test]
+            [Fact]
             public void HasNoDisposablesByDefault() {
                 ((IInternalOwinRequestScopeContextItems) _sut.Items).Disposables.Should().NotBeNull().And.BeEmpty();
             }
 
-            [Test]
+            [Fact]
             public void GivenNullDisposable_ThrowsArgumentNullException() {
                 Action act = () => _sut.RegisterForDisposal(null);
                 act.Should().Throw<ArgumentNullException>();
             }
 
-            [Test]
+            [Fact]
             public void AddsItemToListOfDisposables() {
                 _sut.RegisterForDisposal(_disposable);
                 A.CallTo(() => ((IInternalOwinRequestScopeContextItems) _sut.Items).Disposables.Add(_disposable))
                     .MustHaveHappened();
             }
 
-            [Test]
+            [Fact]
             public void AddsItemToListOfDisposables_EvenIfItIsRegisteredAlready() {
                 _sut.RegisterForDisposal(_disposable);
                 _sut.RegisterForDisposal(_disposable);
@@ -131,16 +122,15 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             }
         }
 
-        [TestFixture]
         public class Dispose : OwinRequestScopeContextFixture {
-            [Test]
+            [Fact]
             public void DisposesItems() {
                 A.CallTo(() => _items.Dispose()).MustNotHaveHappened();
                 _sut.Dispose();
                 A.CallTo(() => _items.Dispose()).MustHaveHappened();
             }
 
-            [Test]
+            [Fact]
             public void FreesContextSlotAfterwards() {
                 OwinRequestScopeContext.Current = _sut;
                 _sut.Dispose();

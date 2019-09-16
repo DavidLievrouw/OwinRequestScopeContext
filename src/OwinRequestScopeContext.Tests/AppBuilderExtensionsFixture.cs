@@ -1,23 +1,20 @@
 ﻿#if NETFRAMEWORK
 using System;
 using System.Diagnostics.CodeAnalysis;
-using NUnit.Framework;
 using Owin;
+using Xunit;
 using FakeItEasy;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
-    [TestFixture]
     public class AppBuilderExtensionsFixture {
-        [TestFixture]
         public class UseRequestScopeContext : AppBuilderExtensionsFixture {
-            IAppBuilder _app;
+            readonly IAppBuilder _app;
 
-            [SetUp]
-            public void SetUp() {
+            public UseRequestScopeContext() {
                 _app = A.Fake<IAppBuilder>();
             }
 
-            [Test]
+            [Fact]
             public void UsesExpectedMiddlewareWithSpecifiedOptions() {
                 var options = new OwinRequestScopeContextOptions {
                     ItemKeyEqualityComparer = StringComparer.Ordinal
@@ -26,7 +23,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 A.CallTo(() => _app.Use(typeof(OwinRequestScopeContextMiddleware), options)).MustHaveHappened();
             }
 
-            [Test]
+            [Fact]
             [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
             public void GivenNullOptions_UsesDefaultOptions() {
                 OwinRequestScopeContextOptions nullOptions = null;
@@ -35,7 +32,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                     .MustHaveHappened();
             }
 
-            [Test]
+            [Fact]
             public void GivenNoOptions_UsesDefaultOptions() {
                 _app.UseRequestScopeContext();
                 A.CallTo(() => _app.Use(typeof(OwinRequestScopeContextMiddleware), OwinRequestScopeContextOptions.Default))

@@ -5,29 +5,26 @@ using System.IO;
 using System.Linq;
 using FakeItEasy;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
-    [TestFixture]
     public class OwinRequestScopeContextItemsFixture {
+        readonly IEqualityComparer<string> _keyComparer;
         OwinRequestScopeContextItems _sut;
-        IEqualityComparer<string> _keyComparer;
 
-        [SetUp]
-        public void SetUp() {
+        public OwinRequestScopeContextItemsFixture() {
             _keyComparer = StringComparer.InvariantCulture;
             _sut = new OwinRequestScopeContextItems(_keyComparer) {{"A", 1}, {"B", 2}};
         }
 
-        [TestFixture]
         public class Construction : OwinRequestScopeContextItemsFixture {
-            [Test]
+            [Fact]
             public void GivenNullKeyComparer_Throws() {
                 Action act = () => new OwinRequestScopeContextItems(null);
                 act.Should().Throw<ArgumentNullException>();
             }
 
-            [Test]
+            [Fact]
             public void UsesSpecifiedComparer() {
                 var sut1 = new OwinRequestScopeContextItems(StringComparer.Ordinal) {{"abc", 1}};
                 sut1.ContainsKey("ABC").Should().BeFalse();
@@ -36,15 +33,14 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             }
         }
 
-        [TestFixture]
         public class Dispose : OwinRequestScopeContextItemsFixture {
-            [Test]
+            [Fact]
             public void WhenNoItemsAreRegisteredForDisposal_DoesNotThrow() {
                 Action act = () => _sut.Dispose();
                 act.Should().NotThrow();
             }
 
-            [Test]
+            [Fact]
             public void DisposesOnlyItemsThatWereRequestedToBeDisposed() {
                 var firstDisposable = A.Fake<IDisposable>();
                 var secondDisposable = A.Fake<IDisposable>();
@@ -58,7 +54,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 A.CallTo(nonDisposable).Where(_ => _.Method.Name == "Dispose").MustNotHaveHappened();
             }
 
-            [Test]
+            [Fact]
             public void DisposesAllRegisteredItems() {
                 var firstDisposable = A.Fake<IDisposable>();
                 var secondDisposable = A.Fake<IDisposable>();
@@ -69,7 +65,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 A.CallTo(() => secondDisposable.Dispose()).MustHaveHappened();
             }
 
-            [Test]
+            [Fact]
             public void WhenDisposalOfAnItemFails_StillDisposesOthers_ThrowsAggregateException() {
                 var firstDisposable = A.Fake<IDisposable>();
                 var secondDisposable = A.Fake<IDisposable>();
@@ -94,9 +90,8 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             }
         }
 
-        [TestFixture]
         public class GetEnumerator : OwinRequestScopeContextItemsFixture {
-            [Test]
+            [Fact]
             public void EnumeratesAllKeyValuePairs() {
                 var actualItems = new List<KeyValuePair<string, object>>();
                 using (var enumerator = _sut.GetEnumerator()) {
@@ -113,16 +108,15 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             }
         }
 
-        [TestFixture]
         public class Clear : OwinRequestScopeContextItemsFixture {
-            [Test]
+            [Fact]
             public void ClearsAllItemsFromDictionary() {
                 _sut.Count.Should().BeGreaterThan(0);
                 _sut.Clear();
                 _sut.Count.Should().Be(0);
             }
 
-            [Test]
+            [Fact]
             public void ClearsDisposableRegistrations() {
                 _sut.Add("D1", new MyDisposableObject(), true);
                 _sut.Clear();
@@ -130,37 +124,35 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             }
         }
 
-        [TestFixture]
         public class Contains : OwinRequestScopeContextItemsFixture {
-            [Test]
+            [Fact]
             public void WhenDictionaryContainsItem_ReturnsTrue() {
                 var itemToFind = _sut.InnerDictionary.ElementAt(0);
                 _sut.Contains(itemToFind).Should().BeTrue();
             }
 
-            [Test]
+            [Fact]
             public void WhenDictionaryDoesNotContainItem_ReturnsFalse() {
                 var itemToFind = new KeyValuePair<string, object>("C", 3);
                 _sut.Contains(itemToFind).Should().BeFalse();
             }
         }
 
-        [TestFixture]
         public class CopyTo : OwinRequestScopeContextItemsFixture {
-            [Test]
+            [Fact]
             public void GivenNullArrayToCopyTo_ThrowsArgumentNullException() {
                 Action act = () => _sut.CopyTo(null, 0);
                 act.Should().Throw<ArgumentNullException>();
             }
 
-            [Test]
+            [Fact]
             public void GivenIndexOutOfRange_ThrowsArgumentException() {
                 var inputArray = new KeyValuePair<string, object>[2];
                 Action act = () => _sut.CopyTo(inputArray, inputArray.Length);
                 act.Should().Throw<ArgumentException>();
             }
 
-            [Test]
+            [Fact]
             public void CopiesToSpecifiedArray() {
                 var inputArray = new KeyValuePair<string, object>[2];
                 _sut.CopyTo(inputArray, 0);
@@ -173,9 +165,8 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             }
         }
 
-        [TestFixture]
         public class Remove : OwinRequestScopeContextItemsFixture {
-            [Test]
+            [Fact]
             public void WhenDictionaryContainsItem_RemovesItemAndReturnsTrue() {
                 var itemToRemove = _sut.InnerDictionary.ElementAt(0);
                 var itemThatIsStillThere = _sut.InnerDictionary.ElementAt(1);
@@ -188,7 +179,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 actualItems.Should().BeEquivalentTo(expectedItems);
             }
 
-            [Test]
+            [Fact]
             public void WhenDictionaryDoesNotContainItem_DoesNotRemoveItemAndReturnsFalse() {
                 var itemToRemove = new KeyValuePair<string, object>("C", 3);
                 _sut.Remove(itemToRemove).Should().BeFalse();
@@ -201,7 +192,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 actualItems.Should().BeEquivalentTo(expectedItems);
             }
 
-            [Test]
+            [Fact]
             public void WhenItemIsRemovedThatIsMarkedForDisposal_AlsoRemovesThatMark() {
                 var disposableValue = new MyDisposableObject();
 
@@ -219,40 +210,36 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             }
         }
 
-        [TestFixture]
         public class Count : OwinRequestScopeContextItemsFixture {
-            [Test]
+            [Fact]
             public void ReturnsNumberOfItemsInDictionary() {
                 _sut.Count.Should().Be(2);
             }
         }
 
-        [TestFixture]
         public class IsReadOnly : OwinRequestScopeContextItemsFixture {
-            [Test]
+            [Fact]
             public void ReturnsFalse() {
                 _sut.IsReadOnly.Should().BeFalse();
             }
         }
 
-        [TestFixture]
         public class ContainsKey : OwinRequestScopeContextItemsFixture {
-            [Test]
+            [Fact]
             public void WhenDictionaryContainsKey_ReturnsTrue() {
                 var itemToFind = _sut.InnerDictionary.ElementAt(0).Key;
                 _sut.ContainsKey(itemToFind).Should().BeTrue();
             }
 
-            [Test]
+            [Fact]
             public void WhenDictionaryDoesNotContainKey_ReturnsFalse() {
                 var itemToFind = "C";
                 _sut.ContainsKey(itemToFind).Should().BeFalse();
             }
         }
 
-        [TestFixture]
         public class RemoveKey : OwinRequestScopeContextItemsFixture {
-            [Test]
+            [Fact]
             public void WhenDictionaryContainsKey_RemovesItemAndReturnsTrue() {
                 var itemToRemove = _sut.InnerDictionary.ElementAt(0).Key;
                 var itemThatIsStillThere = _sut.InnerDictionary.ElementAt(1);
@@ -265,7 +252,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 actualItems.Should().BeEquivalentTo(expectedItems);
             }
 
-            [Test]
+            [Fact]
             public void WhenDictionaryDoesNotContainKey_DoesNotRemoveItemAndReturnsFalse() {
                 var itemToRemove = "C";
                 _sut.Remove(itemToRemove).Should().BeFalse();
@@ -278,7 +265,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 actualItems.Should().BeEquivalentTo(expectedItems);
             }
 
-            [Test]
+            [Fact]
             public void WhenItemIsRemovedThatIsMarkedForDisposal_AlsoRemovesThatMark() {
                 var disposableValue = new MyDisposableObject();
 
@@ -294,9 +281,8 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             }
         }
 
-        [TestFixture]
         public class TryGetValue : OwinRequestScopeContextItemsFixture {
-            [Test]
+            [Fact]
             public void WhenDictionaryContainsKey_SetsOutputItemAndReturnsTrue() {
                 var itemToFind = _sut.InnerDictionary.ElementAt(0).Key;
                 _sut.TryGetValue(itemToFind, out var actualItem).Should().BeTrue();
@@ -304,7 +290,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 actualItem.Should().Be(expectedItem);
             }
 
-            [Test]
+            [Fact]
             public void WhenDictionaryDoesNotContainKey_DoesNotSetOutputItemAndReturnsFalse() {
                 var itemToFind = "C";
                 _sut.TryGetValue(itemToFind, out var actualItem).Should().BeFalse();
@@ -312,39 +298,36 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             }
         }
 
-        [TestFixture]
         public class Keys : OwinRequestScopeContextItemsFixture {
-            [Test]
+            [Fact]
             public void WhenDictionaryContainsNoItems_ReturnsEmptyResult() {
                 _sut = new OwinRequestScopeContextItems(StringComparer.InvariantCulture);
                 _sut.Keys.Should().NotBeNull().And.BeEmpty();
             }
 
-            [Test]
+            [Fact]
             public void WhenDictionaryContainsItems_ReturnsKeysFromThoseItems() {
                 var expected = new[] {"A", "B"};
                 _sut.Keys.Should().BeEquivalentTo(expected);
             }
         }
 
-        [TestFixture]
         public class Values : OwinRequestScopeContextItemsFixture {
-            [Test]
+            [Fact]
             public void WhenDictionaryContainsNoItems_ReturnsEmptyResult() {
                 _sut = new OwinRequestScopeContextItems(StringComparer.InvariantCulture);
                 _sut.Values.Should().NotBeNull().And.BeEmpty();
             }
 
-            [Test]
+            [Fact]
             public void WhenDictionaryContainsItems_ReturnsValuesFromThoseItems() {
                 var expected = new[] {1, 2};
                 _sut.Values.Should().BeEquivalentTo(expected);
             }
         }
 
-        [TestFixture]
         public class GetEnumeratorForUntypedIEnumerable : OwinRequestScopeContextItemsFixture {
-            [Test]
+            [Fact]
             public void EnumeratesAllKeyValuePairs() {
                 var actualItems = new List<object>();
                 var enumerator = ((IEnumerable) _sut).GetEnumerator();
@@ -360,17 +343,15 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             }
         }
 
-        [TestFixture]
         public class Indexer : OwinRequestScopeContextItemsFixture {
-            [TestFixture]
             public class Getter : Indexer {
-                [Test]
+                [Fact]
                 public void WhenDictionaryContainsKey_ReturnsTheValue() {
                     var itemToFind = _sut.InnerDictionary.ElementAt(0).Key;
                     _sut[itemToFind].Should().Be(_sut.InnerDictionary.ElementAt(0).Value);
                 }
 
-                [Test]
+                [Fact]
                 public void WhenDictionaryDoesNotContainKey_ThrowsKeyNotFoundException() {
                     var itemToFind = "C";
                     Action act = () => {
@@ -380,9 +361,8 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 }
             }
 
-            [TestFixture]
             public class Setter : Indexer {
-                [Test]
+                [Fact]
                 public void WhenDictionaryContainsKey_OverwritesTheValue() {
                     var theNewValue = "The new value";
                     var key = _sut.InnerDictionary.ElementAt(0).Key;
@@ -390,7 +370,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                     _sut[key].Should().Be(theNewValue);
                 }
 
-                [Test]
+                [Fact]
                 public void WhenDictionaryDoesNotContainKey_AddsTheValue() {
                     var theNewValue = "The new value";
                     var key = "The new key";
@@ -407,9 +387,8 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             }
         }
 
-        [TestFixture]
         public class AddObject : OwinRequestScopeContextItemsFixture {
-            [Test]
+            [Fact]
             public void GivenNewItem_AddsItemToDictionary() {
                 var newKey = "newKey";
                 var newValue = new object();
@@ -424,16 +403,15 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 actualItems.Should().BeEquivalentTo(expectedItems);
             }
 
-            [Test]
+            [Fact]
             public void GivenExistingKey_ThrowsArgumentException() {
                 Action action = () => _sut.Add(_sut.Keys.ElementAt(0), _sut.Values.ElementAt(0));
                 action.Should().Throw<ArgumentException>();
             }
         }
 
-        [TestFixture]
         public class AddKeyValuePair : OwinRequestScopeContextItemsFixture {
-            [Test]
+            [Fact]
             public void GivenNewItem_AddsItemToDictionary() {
                 var newItem = new KeyValuePair<string, object>("newKey", new object());
 
@@ -448,7 +426,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 actualItems.Should().BeEquivalentTo(expectedItems);
             }
 
-            [Test]
+            [Fact]
             public void GivenExistingKey_ThrowsArgumentException() {
                 var existingElement = _sut.ElementAt(0);
                 Action action = () => _sut.Add(existingElement);
@@ -456,9 +434,8 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             }
         }
 
-        [TestFixture]
         public class AddDisposable : OwinRequestScopeContextItemsFixture {
-            [Test]
+            [Fact]
             public void GivenNewDisposableItem_AddsItemToDictionary() {
                 var newKey = "newKey";
                 var newValue = new MyDisposableObject();
@@ -473,7 +450,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 actualItems.Should().BeEquivalentTo(expectedItems);
             }
 
-            [Test]
+            [Fact]
             public void GivenExistingKey_ThrowsArgumentException() {
                 var existingKey = _sut.Keys.ElementAt(0);
                 var newValue = new MyDisposableObject();
@@ -482,9 +459,8 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             }
         }
 
-        [TestFixture]
         public class AddDisposableWithFlag : OwinRequestScopeContextItemsFixture {
-            [Test]
+            [Fact]
             public void GivenNewDisposableItem_AddsItemToDictionary() {
                 var newKey = "newKey";
                 var newValue = new MyDisposableObject();
@@ -499,7 +475,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 actualItems.Should().BeEquivalentTo(expectedItems);
             }
 
-            [Test]
+            [Fact]
             public void GivenExistingKey_ThrowsArgumentException() {
                 var existingKey = _sut.Keys.ElementAt(0);
                 var newValue = new MyDisposableObject();

@@ -1,28 +1,25 @@
 ﻿#if NETSTANDARD2_0
 using System;
-using System.Threading.Tasks;
-using System.Diagnostics.CodeAnalysis;
-using NUnit.Framework;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using FluentAssertions;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Builder;
+using Xunit;
+using FluentAssertions;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
-    [TestFixture]
     public class ApplicationBuilderExtensionsFixture {
-        [TestFixture]
         public class UseRequestScopeContext : ApplicationBuilderExtensionsFixture {
-            FakeApplicationBuilder _app;
+            readonly FakeApplicationBuilder _app;
 
-            [SetUp]
-            public void SetUp() {
+            public UseRequestScopeContext() {
                 _app = new FakeApplicationBuilder();
             }
 
-            [Test]
+            [Fact]
             public async Task CreatesRequestScopeContext() {
                 var options = new OwinRequestScopeContextOptions {
                     ItemKeyEqualityComparer = StringComparer.Ordinal
@@ -44,7 +41,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 OwinRequestScopeContext.Current.Should().BeNull("The current context should be null when not in the context of a request.");
             }
 
-            [Test]
+            [Fact]
             public async Task UseSpecifiedOptions() {
                 var options = new OwinRequestScopeContextOptions {
                     ItemKeyEqualityComparer = StringComparer.Ordinal
@@ -61,7 +58,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 await requestDelegate.Invoke(new DefaultHttpContext());
             }
 
-            [Test]
+            [Fact]
             [SuppressMessage("ReSharper", "ExpressionIsAlwaysNull")]
             public async Task GivenNullOptions_UseDefaultOptions() {
                 OwinRequestScopeContextOptions nullOptions = null;
@@ -77,7 +74,7 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 await requestDelegate.Invoke(new DefaultHttpContext());
             }
 
-            [Test]
+            [Fact]
             public async Task GivenNoOptions_UseDefaultOptions() {
                 _app.UseOwin(pipeline => pipeline
                     .UseRequestScopeContext()
@@ -92,16 +89,14 @@ namespace DavidLievrouw.OwinRequestScopeContext {
             }
         }
 
-        [TestFixture]
         public class Use : ApplicationBuilderExtensionsFixture {
-            FakeApplicationBuilder _app;
+            readonly FakeApplicationBuilder _app;
 
-            [SetUp]
-            public void SetUp() {
+            public Use() {
                 _app = new FakeApplicationBuilder();
             }
 
-            [Test]
+            [Fact]
             public async Task InvokesMiddleware() {
                 var invocationCount = 0;
                 _app.UseOwin(pipeline => pipeline
@@ -116,13 +111,13 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 invocationCount.Should().Be(1);
             }
 
-            [Test]
+            [Fact]
             public void GivenNullMiddleware_ThrowsArgumentNullException() {
                 Action act = () => _app.UseOwin(pipeline => pipeline.Use(null));
                 act.Should().Throw<ArgumentNullException>();
             }
-            
-            [Test]
+
+            [Fact]
             public async Task DecoratesNextMiddleware() {
                 _app.UseOwin(pipeline => pipeline
                     .Use(environment => {
@@ -132,14 +127,16 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 var requestDelegate = _app.Build();
 
                 await requestDelegate.Invoke(new DefaultHttpContext());
-                
+
                 _app.HasInvokedInnermostMiddleware.Should().BeTrue();
             }
         }
 
         public class FakeApplicationBuilder : IApplicationBuilder {
             readonly IList<Func<RequestDelegate, RequestDelegate>> _components = new List<Func<RequestDelegate, RequestDelegate>>();
-        
+
+            public bool HasInvokedInnermostMiddleware { get; set; }
+
             public IFeatureCollection ServerFeatures { get; }
             public IDictionary<string, object> Properties { get; }
 
@@ -152,8 +149,6 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 throw new NotImplementedException();
             }
 
-            public bool HasInvokedInnermostMiddleware { get; set; }
-
             public RequestDelegate Build() {
                 Task App(HttpContext context) {
                     HasInvokedInnermostMiddleware = true;
@@ -163,11 +158,11 @@ namespace DavidLievrouw.OwinRequestScopeContext {
                 return _components.Reverse().Aggregate((RequestDelegate) App, (current, component) => component(current));
             }
 
+            public IServiceProvider ApplicationServices { get; set; }
+
             public RequestDelegate Build(RequestDelegate requestDelegate) {
                 return _components.Reverse().Aggregate(requestDelegate, (current, component) => component(current));
             }
-
-            public IServiceProvider ApplicationServices { get; set; }
 
             T GetProperty<T>(string key) {
                 object value;

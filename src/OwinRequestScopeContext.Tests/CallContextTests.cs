@@ -1,12 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
-    [TestFixture]
     public class CallContextTests {
-        [Test]
+        [Fact]
         public void WhenFlowingData_ThenCanUseContext() {
             var d1 = new object();
             var t1 = default(object);
