@@ -17,9 +17,7 @@ test_script:
 - cmd: >-
     dotnet restore ./src/OwinRequestScopeContext.Tests/OwinRequestScopeContext.Tests.csproj --verbosity m
     
-    dotnet test ./src/OwinRequestScopeContext.Tests/OwinRequestScopeContext.Tests.csproj --verbosity m --framework net461 --test-adapter-path:. --logger:Appveyor
-    
-    dotnet test ./src/OwinRequestScopeContext.Tests/OwinRequestScopeContext.Tests.csproj --verbosity m --framework netcoreapp2.2 --test-adapter-path:. --logger:Appveyor
+    dotnet test ./src/OwinRequestScopeContext.Tests/OwinRequestScopeContext.Tests.csproj --verbosity m --test-adapter-path:. --logger:Appveyor
 artifacts:
 - path: ./src/OwinRequestScopeContext/bin/Publish/netstandard2.0
   name: publish_netstandard2.0
