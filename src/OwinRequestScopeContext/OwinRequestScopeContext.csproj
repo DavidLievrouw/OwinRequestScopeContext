@@ -10,7 +10,7 @@
     <Description>With this Owin middleware, you can use OwinRequestScopeContext.Current like HttpContext.Current, but without a dependency to System.Web.</Description>
     <Product>DavidLievrouw.OwinRequestScopeContext</Product>
     <Title>DavidLievrouw.OwinRequestScopeContext</Title>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
@@ -48,7 +48,7 @@
     <PropertyGroup>
       <PackagePublishDir Condition="'$(PackagePublishDir)'==''">$(MSBuildThisFileDirectory)bin\Packages\</PackagePublishDir>
     </PropertyGroup>
-    <MakeDir Directories="$(PackagePublishDir)" Condition="!Exists('$(PackagePublishDir)')"/>
+    <MakeDir Directories="$(PackagePublishDir)" Condition="!Exists('$(PackagePublishDir)')" />
     <Exec Command="dotnet pack &quot;$(MSBuildThisFile)&quot; --include-symbols /p:SymbolPackageFormat=snupkg -c $(Configuration) --no-build -o $(PackagePublishDir) /p:NuspecFile=Package\DavidLievrouw.OwinRequestScopeContext.nuspec -p:NuspecBasePath=&quot;$(MSBuildProjectDirectory)&quot; -p:NuspecProperties=\&quot;configuration=$(Configuration);version=$(PackageVersion)\&quot;" />
     <Exec Command="dotnet pack &quot;$(MSBuildThisFile)&quot; -c $(Configuration) --no-build -o $(PackagePublishDir) /p:NuspecFile=Package\DavidLievrouw.OwinRequestScopeContext.Sources.nuspec -p:NuspecBasePath=&quot;$(MSBuildProjectDirectory)&quot; -p:NuspecProperties=\&quot;configuration=$(Configuration);version=$(PackageVersion)\&quot;" />
   </Target>
