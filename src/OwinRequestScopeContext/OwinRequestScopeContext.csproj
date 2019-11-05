@@ -48,7 +48,7 @@
     <PropertyGroup>
       <PackagePublishDir Condition="'$(PackagePublishDir)'==''">$(MSBuildThisFileDirectory)bin\Packages\</PackagePublishDir>
     </PropertyGroup>
-    <Exec Command="dotnet pack &quot;$(MSBuildThisFile)&quot; --include-symbols -c $(Configuration) --no-build -o $(PackagePublishDir) /p:NuspecFile=Package\DavidLievrouw.OwinRequestScopeContext.nuspec -p:NuspecBasePath=&quot;$(MSBuildProjectDirectory)&quot; -p:NuspecProperties=\&quot;configuration=$(Configuration);version=$(PackageVersion)\&quot;" />
+    <Exec Command="dotnet pack &quot;$(MSBuildThisFile)&quot; --include-symbols /p:SymbolPackageFormat=snupkg -c $(Configuration) --no-build -o $(PackagePublishDir) /p:NuspecFile=Package\DavidLievrouw.OwinRequestScopeContext.nuspec -p:NuspecBasePath=&quot;$(MSBuildProjectDirectory)&quot; -p:NuspecProperties=\&quot;configuration=$(Configuration);version=$(PackageVersion)\&quot;" />
     <Exec Command="dotnet pack &quot;$(MSBuildThisFile)&quot; -c $(Configuration) --no-build -o $(PackagePublishDir) /p:NuspecFile=Package\DavidLievrouw.OwinRequestScopeContext.Sources.nuspec -p:NuspecBasePath=&quot;$(MSBuildProjectDirectory)&quot; -p:NuspecProperties=\&quot;configuration=$(Configuration);version=$(PackageVersion)\&quot;" />
   </Target>
 
