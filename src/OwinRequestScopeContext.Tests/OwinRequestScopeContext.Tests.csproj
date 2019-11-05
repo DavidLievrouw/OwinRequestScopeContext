@@ -4,7 +4,6 @@
     <TargetFrameworks>net461;netcoreapp2.2</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
     <AssemblyName>DavidLievrouw.OwinRequestScopeContext.Tests</AssemblyName>
     <RootNamespace>DavidLievrouw.OwinRequestScopeContext</RootNamespace>
     <LangVersion>latest</LangVersion>
