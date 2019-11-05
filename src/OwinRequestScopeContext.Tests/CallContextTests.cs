@@ -5,7 +5,7 @@ using Xunit;
 
 namespace DavidLievrouw.OwinRequestScopeContext {
     public class CallContextTests {
-        [Fact]
+        [Fact(Skip="Not deterministic, run manually.")]
         public void WhenFlowingData_ThenCanUseContext() {
             var d1 = new object();
             var t1 = default(object);
