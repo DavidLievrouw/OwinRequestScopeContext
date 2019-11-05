@@ -10,6 +10,8 @@
     <Description>With this Owin middleware, you can use OwinRequestScopeContext.Current like HttpContext.Current, but without a dependency to System.Web.</Description>
     <Product>DavidLievrouw.OwinRequestScopeContext</Product>
     <Title>DavidLievrouw.OwinRequestScopeContext</Title>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'=='net461'">
@@ -32,18 +34,21 @@
       <Output TaskParameter="Lines" PropertyName="PackageVersion" />
     </ReadLinesFromFile>
     <PropertyGroup>
-      <ProductVersion Condition="'$(ProductVersion)'==''">$(PackageVersion).0</ProductVersion>
+      <BuildCounter Condition="'$(BuildCounter)'==''">0</BuildCounter> 
+      <ProductVersion Condition="'$(ProductVersion)'=='' And $(PackageVersion.IndexOf('-')) &gt; -1">$(PackageVersion.Substring(0, $(PackageVersion.IndexOf('-')))).$(BuildCounter)</ProductVersion>
+      <ProductVersion Condition="'$(ProductVersion)'=='' And $(PackageVersion.IndexOf('-')) &lt; 0">$(PackageVersion).$(BuildCounter)</ProductVersion>
       <Version>$(ProductVersion)</Version>
       <InformationalVersion>$(ProductVersion)</InformationalVersion>
     </PropertyGroup>
-    <Message Text="The package version is '$(PackageVersion)'." Importance="High" />
+    <Message Text="The package version for $(TargetFramework) is '$(PackageVersion)'." Importance="High" />
+    <Message Text="The product version for $(TargetFramework) is '$(ProductVersion)'." Importance="High" />
   </Target>
 
   <Target Name="PackNuGetPackages" AfterTargets="Publish" Condition="'$(IsPublishing)'=='True' And '$(TargetFramework)'=='net461'">
     <PropertyGroup>
       <PackagePublishDir Condition="'$(PackagePublishDir)'==''">$(MSBuildThisFileDirectory)bin\Packages\</PackagePublishDir>
     </PropertyGroup>
-    <Exec Command="dotnet pack &quot;$(MSBuildThisFile)&quot; -c $(Configuration) --no-build -o $(PackagePublishDir) /p:NuspecFile=Package\DavidLievrouw.OwinRequestScopeContext.nuspec -p:NuspecBasePath=&quot;$(MSBuildProjectDirectory)&quot; -p:NuspecProperties=\&quot;configuration=$(Configuration);version=$(PackageVersion)\&quot;" />
+    <Exec Command="dotnet pack &quot;$(MSBuildThisFile)&quot; --include-symbols -c $(Configuration) --no-build -o $(PackagePublishDir) /p:NuspecFile=Package\DavidLievrouw.OwinRequestScopeContext.nuspec -p:NuspecBasePath=&quot;$(MSBuildProjectDirectory)&quot; -p:NuspecProperties=\&quot;configuration=$(Configuration);version=$(PackageVersion)\&quot;" />
     <Exec Command="dotnet pack &quot;$(MSBuildThisFile)&quot; -c $(Configuration) --no-build -o $(PackagePublishDir) /p:NuspecFile=Package\DavidLievrouw.OwinRequestScopeContext.Sources.nuspec -p:NuspecBasePath=&quot;$(MSBuildProjectDirectory)&quot; -p:NuspecProperties=\&quot;configuration=$(Configuration);version=$(PackageVersion)\&quot;" />
   </Target>
 

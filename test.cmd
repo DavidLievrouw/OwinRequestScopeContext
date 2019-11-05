@@ -1,5 +1,9 @@
 @echo off
 cls
-SET SRCDIR=./src/
-dotnet test %SRCDIR%OwinRequestScopeContext.Tests/OwinRequestScopeContext.Tests.csproj
+SET DIR=%~dp0%
+SET SRCDIR=./src
+SET PRODUCT=OwinRequestScopeContext
+
+dotnet test %SRCDIR%/%PRODUCT%.Tests/%PRODUCT%.Tests.csproj
+
 pause

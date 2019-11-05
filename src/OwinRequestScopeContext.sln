@@ -11,7 +11,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OwinRequestScopeContext", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OwinRequestScopeContext.Tests", "OwinRequestScopeContext.Tests\OwinRequestScopeContext.Tests.csproj", "{7A18A2FC-9DD8-473D-A19D-8B689DDD3BE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.NetCore", "Sample.NetCore\Sample.NetCore.csproj", "{762A3B88-C60A-4375-92A5-E2B02A964284}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.NetCore", "Sample.NetCore\Sample.NetCore.csproj", "{762A3B88-C60A-4375-92A5-E2B02A964284}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{28E09E2A-5E19-46B9-B342-92EBA42819E8}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
+		..\appveyor.yml = ..\appveyor.yml
+		..\build.cmd = ..\build.cmd
+		..\LICENSE = ..\LICENSE
+		..\README.md = ..\README.md
+		..\test.cmd = ..\test.cmd
+		..\version.txt = ..\version.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

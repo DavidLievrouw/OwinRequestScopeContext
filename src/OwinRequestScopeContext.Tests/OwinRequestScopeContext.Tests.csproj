@@ -46,7 +46,9 @@
       <Output TaskParameter="Lines" PropertyName="PackageVersion" />
     </ReadLinesFromFile>
     <PropertyGroup>
-      <ProductVersion Condition="'$(ProductVersion)'==''">$(PackageVersion).0</ProductVersion>
+      <BuildCounter Condition="'$(BuildCounter)'==''">0</BuildCounter> 
+      <ProductVersion Condition="'$(ProductVersion)'=='' And $(PackageVersion.IndexOf('-')) &gt; -1">$(PackageVersion.Substring(0, $(PackageVersion.IndexOf('-')))).$(BuildCounter)</ProductVersion>
+      <ProductVersion Condition="'$(ProductVersion)'=='' And $(PackageVersion.IndexOf('-')) &lt; 0">$(PackageVersion).$(BuildCounter)</ProductVersion>
       <Version>$(ProductVersion)</Version>
       <InformationalVersion>$(ProductVersion)</InformationalVersion>
     </PropertyGroup>
